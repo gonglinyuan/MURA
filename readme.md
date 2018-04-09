@@ -1,8 +1,8 @@
-##注意事项##
+## 注意事项
 
 1. 最后要直接交inference的程序, 所以要保留好预处理数据的代码 (从原始数据到模型input全过程的code都要保留)
 
-##Dataset##
+## Dataset
 
 1. 每个study有若干个不同视角的图片, 判断整个study是positive还是negative
 
@@ -12,7 +12,9 @@
 
    Positive : negative = 544:664 (valid)
 
-##计算资源##
+4. 数据: MURA_trainval.zip CRC32: 3ef6712c
+
+## 计算资源
 
 1. 图灵班GPU服务器
 
@@ -26,16 +28,20 @@
 
    支持tensorflow1.4以下的版本, 支持python3.6以下的版本
 
-   不知道是否支持Keras, 需要测试
+   Keras配置后可以import, 不知道能不能用GPU跑起来
 
-##统一开发环境##
+3. 吉如一哥哥的台式机
+
+   GTX1080Ti, 只能短期借用
+
+## 统一开发环境
 
 1. 程序都能在python3.5+运行
 2. 模型尽量能在Tensorflow1.4上面跑
    - Tensorflow的新版本可以导入旧版本的模型(前提是版本号第一位一样, 都是1)
    - Tensorflow旧版本和新版本的源程序可能不兼容(尽量保证兼容Tensorflow1.4)
 
-##To-do##
+## To-do
 
 1. 按照论文1712.06957.pdf先做个Baseline
 
