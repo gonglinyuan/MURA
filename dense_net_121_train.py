@@ -40,7 +40,7 @@ data_valid_generator = data_valid_generator.flow_from_directory(
     shuffle=True
 )
 
-model = dense_net_121.dense_net_121(256, 256, color_type=3, weights_path=pretrained_weights_path)
+model = dense_net_121.dense_net_121(256, 256, color_type=3, weights_path=pretrained_weights_path, dropout_rate=0.2)
 
 print(model.to_json())
 
