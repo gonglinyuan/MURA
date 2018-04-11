@@ -1,11 +1,8 @@
-import os
 import hashlib
+import os
 import shutil
-import numpy as np
+
 import pandas
-import h5py
-import tensorflow as tf
-from PIL import Image
 
 input_prefix = '../MURA_trainval/train/'
 output_prefix = '../MURA_trainval_keras/'
@@ -22,7 +19,7 @@ for x_path, y in meta_data:
               + hashlib.sha1(('/'.join(x_path.split('/')[2:])).encode('utf-8')).hexdigest()
               + '.png')
     shutil.copy(i_path, o_path)
-    
+
 input_prefix = '../MURA_trainval/valid/'
 output_prefix_1 = '../MURA_valid1_keras/'
 output_prefix_2 = '../MURA_valid2_keras/'
