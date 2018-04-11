@@ -6,7 +6,7 @@ from keras.preprocessing.image import ImageDataGenerator
 
 import dense_net_121
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 
 data_train_path = '../MURA_trainval_keras/'
 data_valid_path = '../MURA_valid1_keras/'
@@ -51,8 +51,8 @@ model.fit_generator(
     validation_data=data_valid_generator,
     callbacks=[
         ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=5, mode='min'),
-        ModelCheckpoint("dense_net_121_weights.{epoch:03d}-{val_loss:.2f}.h5", monitor='val_loss',
-                        save_best_only=False, save_weights_only=True, mode='min', period=5),
+        ModelCheckpoint(model_save_path + "dense_net_121_weights.{epoch:03d}-{val_loss:.2f}.h5",
+                        monitor='val_loss', save_best_only=False, save_weights_only=True, mode='min', period=5),
         TensorBoard(log_dir=tensorboard_path),
         CSVLogger('training_' + str(timestamp) + '.log')
     ]
