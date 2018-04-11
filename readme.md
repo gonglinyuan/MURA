@@ -1,6 +1,7 @@
 ## 注意事项
 
 1. 最后要直接交inference的程序, 所以要保留好预处理数据的代码 (从原始数据到模型input全过程的code都要保留)
+2. train set用来训练模型; valid set划分为valid1和valid2, 其中valid1用来对模型调参, valid2用来ensemble
 
 ## Dataset
 
@@ -53,8 +54,16 @@
 
 1. 按照论文1712.06957.pdf先做个Baseline
 
-   DenseNet-169 (pretrained on ImageNet) 修改输出层
+   DenseNet-121 (pretrained on ImageNet) 修改输出层
 
    算法可以参考1608.06993.pdf
 
    代码可以参考https://github.com/flyyufelix/cnn_finetune
+
+2. 训练代码加上Tensorboard
+
+3. 写inference的代码 (TenCrop)
+
+4. 尝试其它网络结构, 比如DenseNet-169, DenseNet-161, ResNet等等
+
+5. 针对数据做一些处理
