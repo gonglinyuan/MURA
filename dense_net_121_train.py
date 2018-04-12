@@ -34,7 +34,7 @@ data_train_generator = data_train_generator.flow_from_directory(
     target_size=(256, 256),
     color_mode='rgb',
     class_mode='binary',
-    batch_size=16,
+    batch_size=h_params['batch_size'],
     shuffle=True
 )
 
@@ -45,7 +45,7 @@ data_valid_generator = data_valid_generator.flow_from_directory(
     target_size=(256, 256),
     color_mode='rgb',
     class_mode='binary',
-    batch_size=16,
+    batch_size=h_params['batch_size'],
     shuffle=True
 )
 

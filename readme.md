@@ -56,6 +56,10 @@
    - Dropout (Dense Layers): drop_prob = 0.2
    - Valid set loss = 0.5463
    - Valid set acc = 0.8175
+2. DenseNet121
+   - Dropout (Output Layer): drop_prob = 0.5
+   - Valid set loss = 1.4147
+   - Valid set acc = 0.8081
 
 ## To-do
 
