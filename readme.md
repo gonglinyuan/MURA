@@ -50,6 +50,13 @@
    - Tensorflow的新版本可以导入旧版本的模型(前提是版本号第一位一样, 都是1)
    - Tensorflow旧版本和新版本的源程序可能不兼容(尽量保证兼容Tensorflow1.4)
 
+## 初步结果
+
+1. DenseNet121
+   - Dropout (Dense Layers): drop_prob = 0.2
+   - Valid set loss = 0.5463
+   - Valid set acc = 0.8175
+
 ## To-do
 
 1. 按照论文1712.06957.pdf先做个Baseline

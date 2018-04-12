@@ -1,12 +1,21 @@
 import os
 import time
 
+import keras.backend.tensorflow_backend as K
+import tensorflow as tf
 from keras.callbacks import ReduceLROnPlateau, ModelCheckpoint, TensorBoard, CSVLogger
 from keras.preprocessing.image import ImageDataGenerator
 
 import dense_net_121
+import hyperparameters
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "3"
+config = tf.ConfigProto()
+config.gpu_options.allow_growth = True
+sess = tf.Session(config=config)
+K.set_session(sess)
+
+h_params = hyperparameters.load_hyperparameters()
 
 data_train_path = '../MURA_trainval_keras/'
 data_valid_path = '../MURA_valid1_keras/'
@@ -40,7 +49,13 @@ data_valid_generator = data_valid_generator.flow_from_directory(
     shuffle=True
 )
 
-model = dense_net_121.dense_net_121(256, 256, color_type=3, weights_path=pretrained_weights_path, dropout_rate=0.2)
+model = dense_net_121.dense_net_121(
+    256, 256, color_type=3,
+    weights_path=pretrained_weights_path,
+    dropout_rate=h_params['dropout_dense'],
+    weight_decay=h_params['weight_decay'],
+    dropout_fc=h_params['dropout_fc']
+)
 
 print(model.to_json())
 

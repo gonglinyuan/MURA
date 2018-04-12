@@ -9,6 +9,7 @@ from keras.layers.normalization import BatchNormalization
 from keras.layers.pooling import AveragePooling2D, GlobalAveragePooling2D, MaxPooling2D
 from keras.models import Model
 from keras.optimizers import Adam
+from keras.regularizers import l2
 
 MEAN, SCALE = 52.42393088150025, 0.022162079688563673
 
@@ -77,7 +78,7 @@ class Scale(Layer):
 
 
 def dense_net_121(img_rows, img_cols, color_type=1, nb_dense_block=4, growth_rate=32, nb_filter=64, reduction=0.5,
-                  dropout_rate=0.0, weight_decay=1e-4, weights_path=None):
+                  dropout_rate=0.0, weight_decay=0.0, dropout_fc=0.0, weights_path=None):
     '''
     DenseNet 121 Model for Keras
     Model Schema is based on 
@@ -126,8 +127,10 @@ def dense_net_121(img_rows, img_cols, color_type=1, nb_dense_block=4, growth_rat
 
     # Initial convolution
     x = ZeroPadding2D((3, 3), name='conv1_zeropadding')(X)
-    x = Convolution2D(nb_filter, 7, 7, subsample=(2, 2), name='conv1', bias=False)(x)
-    x = BatchNormalization(epsilon=eps, axis=concat_axis, name='conv1_bn')(x)
+    x = Convolution2D(nb_filter, 7, 7, subsample=(2, 2), name='conv1', bias=False, kernel_regularizer=l2(weight_decay))(
+        x)
+    x = BatchNormalization(epsilon=eps, axis=concat_axis, name='conv1_bn', beta_regularizer=l2(weight_decay),
+                           gamma_regularizer=l2(weight_decay))(x)
     x = Scale(axis=concat_axis, name='conv1_scale')(x)
     x = Activation('relu', name='relu1')(x)
     x = ZeroPadding2D((1, 1), name='pool1_zeropadding')(x)
@@ -148,7 +151,8 @@ def dense_net_121(img_rows, img_cols, color_type=1, nb_dense_block=4, growth_rat
     x, nb_filter = dense_block(x, final_stage, nb_layers[-1], nb_filter, growth_rate, dropout_rate=dropout_rate,
                                weight_decay=weight_decay)
 
-    x = BatchNormalization(epsilon=eps, axis=concat_axis, name='conv' + str(final_stage) + '_blk_bn')(x)
+    x = BatchNormalization(epsilon=eps, axis=concat_axis, name='conv' + str(final_stage) + '_blk_bn',
+                           beta_regularizer=l2(weight_decay), gamma_regularizer=l2(weight_decay))(x)
     x = Scale(axis=concat_axis, name='conv' + str(final_stage) + '_blk_scale')(x)
     x = Activation('relu', name='relu' + str(final_stage) + '_blk')(x)
 
@@ -164,7 +168,8 @@ def dense_net_121(img_rows, img_cols, color_type=1, nb_dense_block=4, growth_rat
     # Cannot use model.layers.pop() since model is not of Sequential() type
     # The method below works since pre-trained weights are stored in layers but not in the model
     x_newfc = GlobalAveragePooling2D(name='pool' + str(final_stage))(x)
-    x_newfc = Dense(1, name='fc6')(x_newfc)
+    x_newfc = Dropout(dropout_fc)(x_newfc)
+    x_newfc = Dense(1, name='fc6', kernel_regularizer=l2(weight_decay))(x_newfc)
     x_newfc = Activation('sigmoid', name='prob')(x_newfc)
 
     model = Model(img_input, x_newfc)
@@ -195,20 +200,23 @@ def conv_block(x, stage, branch, nb_filter, dropout_rate=None, weight_decay=1e-4
 
     # 1x1 Convolution (Bottleneck layer)
     inter_channel = nb_filter * 4
-    x = BatchNormalization(epsilon=eps, axis=concat_axis, name=conv_name_base + '_x1_bn')(x)
+    x = BatchNormalization(epsilon=eps, axis=concat_axis, name=conv_name_base + '_x1_bn',
+                           beta_regularizer=l2(weight_decay), gamma_regularizer=l2(weight_decay))(x)
     x = Scale(axis=concat_axis, name=conv_name_base + '_x1_scale')(x)
     x = Activation('relu', name=relu_name_base + '_x1')(x)
-    x = Convolution2D(inter_channel, 1, 1, name=conv_name_base + '_x1', bias=False)(x)
+    x = Convolution2D(inter_channel, 1, 1, name=conv_name_base + '_x1', bias=False,
+                      kernel_regularizer=l2(weight_decay))(x)
 
     if dropout_rate:
         x = Dropout(dropout_rate)(x)
 
     # 3x3 Convolution
-    x = BatchNormalization(epsilon=eps, axis=concat_axis, name=conv_name_base + '_x2_bn')(x)
+    x = BatchNormalization(epsilon=eps, axis=concat_axis, name=conv_name_base + '_x2_bn',
+                           beta_regularizer=l2(weight_decay), gamma_regularizer=l2(weight_decay))(x)
     x = Scale(axis=concat_axis, name=conv_name_base + '_x2_scale')(x)
     x = Activation('relu', name=relu_name_base + '_x2')(x)
     x = ZeroPadding2D((1, 1), name=conv_name_base + '_x2_zeropadding')(x)
-    x = Convolution2D(nb_filter, 3, 3, name=conv_name_base + '_x2', bias=False)(x)
+    x = Convolution2D(nb_filter, 3, 3, name=conv_name_base + '_x2', bias=False, kernel_regularizer=l2(weight_decay))(x)
 
     if dropout_rate:
         x = Dropout(dropout_rate)(x)
@@ -232,10 +240,12 @@ def transition_block(x, stage, nb_filter, compression=1.0, dropout_rate=None, we
     relu_name_base = 'relu' + str(stage) + '_blk'
     pool_name_base = 'pool' + str(stage)
 
-    x = BatchNormalization(epsilon=eps, axis=concat_axis, name=conv_name_base + '_bn')(x)
+    x = BatchNormalization(epsilon=eps, axis=concat_axis, name=conv_name_base + '_bn',
+                           beta_regularizer=l2(weight_decay), gamma_regularizer=l2(weight_decay))(x)
     x = Scale(axis=concat_axis, name=conv_name_base + '_scale')(x)
     x = Activation('relu', name=relu_name_base)(x)
-    x = Convolution2D(int(nb_filter * compression), 1, 1, name=conv_name_base, bias=False)(x)
+    x = Convolution2D(int(nb_filter * compression), 1, 1, name=conv_name_base, bias=False,
+                      kernel_regularizer=l2(weight_decay))(x)
 
     if dropout_rate:
         x = Dropout(dropout_rate)(x)
