@@ -9,7 +9,7 @@ from keras.preprocessing.image import ImageDataGenerator
 import dense_net_121
 import hyperparameters
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "3"
+os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
 sess = tf.Session(config=config)
@@ -54,7 +54,8 @@ model = dense_net_121.dense_net_121(
     weights_path=pretrained_weights_path,
     dropout_rate=h_params['dropout_dense'],
     weight_decay=h_params['weight_decay'],
-    dropout_fc=h_params['dropout_fc']
+    dropout_fc=h_params['dropout_fc'],
+    freeze_dense_block_num=h_params['freeze_dense_block_num']
 )
 
 print(model.to_json())
