@@ -2,6 +2,7 @@
 
 1. 最后要直接交inference的程序, 所以要保留好预处理数据的代码 (从原始数据到模型input全过程的code都要保留)
 2. train set用来训练模型; valid set划分为valid1和valid2, 其中valid1用来对模型调参, valid2用来ensemble
+3. 参数尽量分离到另外一个文件里 (目前是hyperparameters.py) , 调参的时候不要动代码
 
 ## Dataset
 
@@ -67,12 +68,10 @@
    - Dropout (Dense Layers): drop_prob = 0.1
    - Dropout (Output Layer): drop_prob = 0.5
    - Weight decay: 1e-3
-
-
    - Valid set loss = 0.6707
    - Valid set acc = 0.7755
 
-## To-do
+## Done
 
 1. 按照论文1712.06957.pdf先做个Baseline
 
@@ -82,10 +81,16 @@
 
    代码可以参考https://github.com/flyyufelix/cnn_finetune
 
-2. 训练代码加上Tensorboard
+## To-do
 
-3. 写inference的代码 (TenCrop)
+1. 对已有模型的调参 (freeze一些layer, 加regularization), 数据增强 (旋转, 剪切)
 
-4. 尝试其它网络结构, 比如DenseNet-169, DenseNet-161, ResNet等等
+2. 写inference的代码 (TenCrop)
 
-5. 针对数据做一些处理
+3. 尝试其它网络结构
+
+   参考https://github.com/flyyufelix/cnn_finetune
+
+4. 针对数据做一些处理 / 清洗
+   - 去黑边
+   - 避免不成比例的伸缩
