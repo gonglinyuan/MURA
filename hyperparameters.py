@@ -1,2 +1,2 @@
 def load_hyperparameters():
-    return {'dropout_dense': 0.0, 'weight_decay': 1e-4, 'dropout_fc': 0.5, 'batch_size': 20, 'freeze_dense_block_num':0 }
+    return {'dropout_dense': 0.0, 'weight_decay': 0.0, 'dropout_fc': 0.0, 'batch_size': 32, 'freeze_dense_block_num':1 }
