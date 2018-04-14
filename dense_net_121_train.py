@@ -60,6 +60,8 @@ model = dense_net_121.dense_net_121(
 
 print(model.to_json())
 
+model.summary()
+
 model.fit_generator(
     data_train_generator,
     epochs=100,
