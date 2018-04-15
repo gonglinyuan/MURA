@@ -9,7 +9,7 @@ from keras.preprocessing.image import ImageDataGenerator
 import dense_net_121
 import hyperparameters
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "2"
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
 sess = tf.Session(config=config)
@@ -27,7 +27,12 @@ tensorboard_path = '../tensorboard_' + str(timestamp) + '/'
 os.makedirs(model_save_path, mode=0o700, exist_ok=True)
 os.makedirs(tensorboard_path, mode=0o700, exist_ok=True)
 
-data_train_generator = ImageDataGenerator(horizontal_flip=True)
+data_train_generator = ImageDataGenerator(
+    horizontal_flip=True,
+    rotation_range=h_params['rotation_range'],
+    zoom_range=h_params['zoom_range'],
+    shear_range=h_params['shear_range']
+)
 
 data_train_generator = data_train_generator.flow_from_directory(
     data_train_path,
