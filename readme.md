@@ -72,6 +72,10 @@
    - Freeze the initial convolution layer
    - Valid set loss = 1.056
    - Valid set acc = 0.8015
+5. DenseNet121
+   - Data Augmentation
+   - Valid set loss = 0.5694
+   - Valid set acc = 0.8161
 
 ## Done
 
@@ -85,14 +89,16 @@
 
 ## To-do
 
-1. 对已有模型的调参 (freeze一些layer, 加regularization), 数据增强 (旋转, 剪切)
+1. Important: 实现AUC metric
 
-2. 写inference的代码 (TenCrop)
+2. 对已有模型的调参 (freeze一些layer, 加regularization), 数据增强 (旋转, 剪切)
 
-3. 尝试其它网络结构
+3. 写inference的代码 (TenCrop)
+
+4. 尝试其它网络结构
 
    参考https://github.com/flyyufelix/cnn_finetune
 
-4. 针对数据做一些处理 / 清洗
+5. 针对数据做一些处理 / 清洗
    - 去黑边
    - 避免不成比例的伸缩
