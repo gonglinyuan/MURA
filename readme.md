@@ -99,6 +99,8 @@
 
    参考https://github.com/flyyufelix/cnn_finetune
 
+   再加上Dual Path Network
+
 5. 针对数据做一些处理 / 清洗
    - 去黑边
    - 避免不成比例的伸缩
