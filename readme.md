@@ -76,7 +76,15 @@
    - Data Augmentation
    - Valid set loss = 0.5694
    - Valid set acc = 0.8161
-
+6. DenseNet121
+   - Freeze Layers
+   
+   |Freeze-Dense-Block-Num|Val-Acc|Val-Loss|Val-Turning-Point|
+   |:-|:-|:-|:-|
+   |0|N/A|N/A|N/A|
+   |1|N/A|N/A|N/A|
+   |2|N/A|N/A|N/A|
+   |3|N/A|N/A|N/A|
 ## Done
 
 1. 按照论文1712.06957.pdf先做个Baseline
