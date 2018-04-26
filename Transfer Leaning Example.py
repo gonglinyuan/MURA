@@ -121,6 +121,8 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
 
 model_ft = models.densenet161(pretrained=True)
 num_ftrs = model_ft.classifier.in_features
+del model_ft.classifier
+model_ft.dropout = nn.Dropout(p=0.5)
 model_ft.classifier = nn.Linear(num_ftrs, 2)
 
 if use_gpu:
