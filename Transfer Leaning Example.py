@@ -12,22 +12,26 @@ import time
 import os
 import copy
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "3"
+# os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 
 # Data augmentation and normalization for training
 # Just normalization for validation
+
+DATA_MEAN = 0.20558404267255
+DATA_STD = 0.17694948680626902473216631207703
+
 data_transforms = {
     'train': transforms.Compose([
         transforms.RandomResizedCrop(224),
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
-        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+        transforms.Normalize([DATA_MEAN, DATA_MEAN, DATA_MEAN], [DATA_STD, DATA_STD, DATA_STD])
     ]),
     'valid': transforms.Compose([
         transforms.Resize(256),
         transforms.CenterCrop(224),
         transforms.ToTensor(),
-        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+        transforms.Normalize([DATA_MEAN, DATA_MEAN, DATA_MEAN], [DATA_STD, DATA_STD, DATA_STD])
     ]),
 }
 
@@ -35,8 +39,8 @@ data_dir = 'MURA_Torch_Format'
 image_datasets = {x: datasets.ImageFolder(os.path.join(data_dir, x),
                                           data_transforms[x])
                   for x in ['train', 'valid']}
-dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=24,
-                                             shuffle=True, num_workers=4)
+dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=100,
+                                             shuffle=True, num_workers=20)
               for x in ['train', 'valid']}
 dataset_sizes = {x: len(image_datasets[x]) for x in ['train', 'valid']}
 class_names = image_datasets['train'].classes
@@ -122,16 +126,16 @@ model_ft.classifier = nn.Linear(num_ftrs, 2)
 if use_gpu:
     model_ft = model_ft.cuda()
     # Uncomment below if you want to use multiple GPUs
-    # model_ft = nn.DataParallel(model_ft)
+    model_ft = nn.DataParallel(model_ft)
 
 criterion = nn.CrossEntropyLoss()
 
 # Observe that all parameters are being optimized
 # optimizer_ft = optim.SGD(model_ft.parameters(), lr=0.001, momentum=0.9)
-optimizer_ft = torch.optim.Adam(model_ft.parameters(), lr=0.001)
+optimizer_ft = torch.optim.Adam(model_ft.parameters(), lr=0.0004, betas=(0.9, 0.999), eps=1e-08, weight_decay=0, amsgrad=False)
 
 # Decay LR by a factor of 0.1 every 7 epochs
-exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=25, gamma=0.1)
+exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=25, gamma=0.5)
 
 model_ft = train_model(model_ft, criterion, optimizer_ft, exp_lr_scheduler,
-                       num_epochs=25)
+                       num_epochs=100)
