@@ -141,3 +141,9 @@ exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=25, gamma=0.5)
 
 model_ft = train_model(model_ft, criterion, optimizer_ft, exp_lr_scheduler,
                        num_epochs=100)
+
+finish_time = time.strftime("%Y-%m-%d-%H-%M-%S",time.localtime(time.time()))
+model_name = finish_time + '.pkl'
+torch.save(model_ft, model_name)
+# Loading model use the following code
+# model = torch.load('model.pkl')
