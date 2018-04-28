@@ -96,7 +96,8 @@ def epoch_valid(model, data_loader, loss_fn):
     for (x, y) in data_loader:
         x = x.to(DEVICE)
         y = y.to(torch.float32).to(DEVICE)
-        loss = loss_fn(model(x).view(-1), y)
+        with torch.no_grad():
+            loss = loss_fn(model(x).view(-1), y)
         loss_sum += loss
         loss_value += loss.data[0]
         num += 1
@@ -144,7 +145,8 @@ def test(path_data, path_model, model_name, model_pretrained, batch_size, img_si
         x = x.to(DEVICE)
         y = y.to(DEVICE)
         true = torch.cat((true, y), 0)
-        y_hat = torch.nn.Sigmoid()(model(x.view(-1, c, h, w)))
+        with torch.no_grad():
+            y_hat = torch.nn.Sigmoid()(model(x.view(-1, c, h, w)))
         y_hat = y_hat.view(bs, n_crops, -1).mean(1)
         score = torch.cat((score, y_hat.data), 0)
     auroc = compute_auroc(true, score)
