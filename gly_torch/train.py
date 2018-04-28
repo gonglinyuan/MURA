@@ -105,19 +105,19 @@ def epoch_valid(model, data_loader):
     #     loss_value += loss.data[0]
     #     num += 1
     # return loss_value / num, loss_sum / num
-    true = torch.FloatTensor().to(DEVICE)
-    score = torch.FloatTensor().to(DEVICE)
+    true = torch.FloatTensor()
+    score = torch.FloatTensor()
     bce = []
     model.eval()
     for (x, y) in data_loader:
         bs, n_crops, c, h, w = x.size()
         x = x.to(DEVICE)
-        true = torch.cat((true, y.to(DEVICE)), 0)
+        true = torch.cat((true, y), 0)
         with torch.no_grad():
             y_hat = torch.nn.Sigmoid()(model(x.view(-1, c, h, w)))
         y_hat = y_hat.view(bs, n_crops, -1).mean(1)
-        bce.append(torch.nn.BCELoss(size_average=True)(y_hat, y.to(torch.float32).to(DEVICE)))
-        score = torch.cat((score, y_hat.data), 0)
+        bce.append(torch.nn.BCELoss(size_average=True)(y_hat, y.to(torch.float32).to(DEVICE)).to(CPU))
+        score = torch.cat((score, y_hat), 0)
     return torch.Tensor(bce).mean(), compute_auroc(true, score)
 
 
