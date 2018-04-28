@@ -70,16 +70,16 @@ def train(path_data_train, path_data_valid, model_name, model_pretrained, batch_
         epoch_train(model, data_loader_train, optimizer, loss_fn)
         loss, auroc = epoch_valid(model, data_loader_valid)
         timestamp_now = time.strftime("%Y%m%d") + '-' + time.strftime("%H%M%S")
-        scheduler.step(loss.data[0])
-        if loss.data[0] < loss_min:
-            loss_min = loss.data[0]
+        scheduler.step(loss)
+        if loss < loss_min:
+            loss_min = loss
             torch.save({'epoch': epoch + 1, 'state_dict': model.state_dict(), 'best_loss': loss_min,
                         'optimizer': optimizer.state_dict()}, 'm-' + timestamp + '.pth.tar')
-            print('Epoch [' + str(epoch + 1) + '] [save] [' + timestamp_now + '] loss= ' + str(
-                loss.data[0]) + '  auroc = ' + str(auroc))
+            print('Epoch [' + str(epoch + 1) + '] [save] [' + timestamp_now + '] loss= ' +
+                  str(loss) + '  auroc = ' + str(auroc))
         else:
-            print('Epoch [' + str(epoch + 1) + '] [----] [' + timestamp_now + '] loss= ' + str(
-                loss.data[0]) + '  auroc = ' + str(auroc))
+            print('Epoch [' + str(epoch + 1) + '] [----] [' + timestamp_now + '] loss= ' +
+                  str(loss) + '  auroc = ' + str(auroc))
 
 
 def epoch_train(model, data_loader, optimizer, loss_fn):
@@ -156,18 +156,22 @@ def test(path_data, path_model, model_name, model_pretrained, batch_size, img_si
     data_loader_test = DataLoader(
         ImageFolder(path_data, transform=transform_sequence_test),
         batch_size=batch_size, shuffle=False, num_workers=10, pin_memory=True)
-    true = torch.FloatTensor().to(DEVICE)
-    score = torch.FloatTensor().to(DEVICE)
+    true = torch.LongTensor()
+    score = torch.FloatTensor()
+    bce = []
     model.eval()
     for (x, y) in data_loader_test:
         bs, n_crops, c, h, w = x.size()
         x = x.to(DEVICE)
-        y = y.to(DEVICE)
         true = torch.cat((true, y), 0)
         with torch.no_grad():
             y_hat = torch.nn.Sigmoid()(model(x.view(-1, c, h, w)))
-        y_hat = y_hat.view(bs, n_crops, -1).mean(1)
-        score = torch.cat((score, y_hat.data), 0)
+        y_hat = y_hat.to(CPU)
+        y_hat = y_hat.view(bs, n_crops).mean(1)
+        score = torch.cat((score, y_hat), 0)
+        loss_fn = torch.nn.BCELoss(size_average=True)
+        bce.append(loss_fn(y_hat, y.to(torch.float32)))
+    loss, auroc = torch.Tensor(bce).mean().item(), compute_auroc(true, score)
     auroc = compute_auroc(true, score)
-    print('AUROC = ', auroc)
+    print('loss = ' + loss + '  AUROC = ', auroc)
     return
