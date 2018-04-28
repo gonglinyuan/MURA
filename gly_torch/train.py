@@ -117,7 +117,7 @@ def epoch_valid(model, data_loader):
             y_hat = torch.nn.Sigmoid()(model(x.view(-1, c, h, w)))
         y_hat = y_hat.view(bs, n_crops, -1).mean(1)
         bce.append(torch.nn.BCELoss(size_average=True)(y_hat, y.to(torch.float32).to(DEVICE)).to(CPU))
-        score = torch.cat((score, y_hat), 0)
+        score = torch.cat((score, y_hat.to(CPU)), 0)
     return torch.Tensor(bce).mean(), compute_auroc(true, score)
 
 
