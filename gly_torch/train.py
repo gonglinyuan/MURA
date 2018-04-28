@@ -64,7 +64,8 @@ def train(path_data_train, path_data_valid, model_name, model_pretrained, batch_
         model.load_state_dict(model_checkpoint['state_dict'])
         optimizer.load_state_dict(model_checkpoint['optimizer'])
     # ---- TRAIN THE NETWORK
-    loss_min = 100000
+    loss_min, _ = epoch_valid(model, data_loader_valid, loss_fn)
+    print('Initial loss=' + str(loss_min))
     for epoch in range(0, epoch_num):
         epoch_train(model, data_loader_train, optimizer, loss_fn)
         loss_value, loss_tensor = epoch_valid(model, data_loader_valid, loss_fn)
