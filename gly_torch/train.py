@@ -105,7 +105,7 @@ def epoch_valid(model, data_loader):
     #     loss_value += loss.data[0]
     #     num += 1
     # return loss_value / num, loss_sum / num
-    true = torch.FloatTensor()
+    true = torch.LongTensor()
     score = torch.FloatTensor()
     bce = []
     model.eval()
