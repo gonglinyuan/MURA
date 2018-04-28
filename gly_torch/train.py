@@ -65,7 +65,7 @@ def train(path_data_train, path_data_valid, model_name, model_pretrained, batch_
         optimizer.load_state_dict(model_checkpoint['optimizer'])
     # ---- TRAIN THE NETWORK
     loss_min, auroc_max = epoch_valid(model, data_loader_valid)
-    print('Initial loss=' + str(loss_min))
+    print('Initial loss = ' + str(loss_min))
     for epoch in range(0, epoch_num):
         epoch_train(model, data_loader_train, optimizer, loss_fn)
         loss, auroc = epoch_valid(model, data_loader_valid)
@@ -110,15 +110,18 @@ def epoch_valid(model, data_loader):
     bce = []
     model.eval()
     for (x, y) in data_loader:
+        print(y)
         bs, n_crops, c, h, w = x.size()
         x = x.to(DEVICE)
         true = torch.cat((true, y), 0)
         with torch.no_grad():
             y_hat = torch.nn.Sigmoid()(model(x.view(-1, c, h, w)))
+        y_hat = y_hat.to(CPU)
         y_hat = y_hat.view(bs, n_crops, -1).mean(1)
-        bce.append(torch.nn.BCELoss(size_average=True)(y_hat, y.to(torch.float32).to(DEVICE)).to(CPU))
-        score = torch.cat((score, y_hat.to(CPU)), 0)
-    return torch.Tensor(bce).mean(), compute_auroc(true, score)
+        score = torch.cat((score, y_hat), 0)
+        loss_fn = torch.nn.BCELoss(size_average=True)
+        bce.append(loss_fn(y_hat, y.to(torch.float32)))
+    return torch.Tensor(bce).mean().item(), compute_auroc(true, score)
 
 
 def compute_auroc(true, score):
