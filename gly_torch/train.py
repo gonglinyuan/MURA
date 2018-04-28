@@ -116,8 +116,7 @@ def epoch_valid(model, data_loader):
         with torch.no_grad():
             y_hat = torch.nn.Sigmoid()(model(x.view(-1, c, h, w)))
         y_hat = y_hat.to(CPU)
-        y_hat = y_hat.view(bs, n_crops, -1).mean(1)
-        print(y_hat)
+        y_hat = y_hat.view(bs, n_crops).mean(1)
         score = torch.cat((score, y_hat), 0)
         loss_fn = torch.nn.BCELoss(size_average=True)
         bce.append(loss_fn(y_hat, y.to(torch.float32)))
