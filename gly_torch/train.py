@@ -5,6 +5,7 @@ import torch.backends.cudnn as cudnn
 import torch.optim as optim
 import torchvision.transforms as transforms
 from sklearn.metrics.ranking import roc_auc_score
+from tensorboardX import FileWriter
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.data import DataLoader
 from torchvision.datasets import ImageFolder
@@ -19,9 +20,11 @@ DATA_STD = 0.17694948680626902473216631207703
 CPU = torch.device("cpu")
 DEVICE = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 
+EMA_ALPHA_TRAIN_LOSS = 0.99
 
-def train(path_data_train, path_data_valid, model_name, model_pretrained, batch_size, epoch_num, img_size, crop_size,
-          timestamp, checkpoint):
+
+def train(*, path_data_train, path_data_valid, path_log, path_model, model_name, model_pretrained, batch_size,
+          epoch_num, img_size, crop_size, checkpoint):
     # -------------------- SETTINGS: NETWORK ARCHITECTURE
     if model_name == 'DENSE-NET-121':
         model = DenseNet121(class_count=1, is_trained=model_pretrained).to(DEVICE)
@@ -55,7 +58,7 @@ def train(path_data_train, path_data_valid, model_name, model_pretrained, batch_
         batch_size=batch_size, shuffle=False, num_workers=20, pin_memory=True)
     # -------------------- SETTINGS: OPTIMIZER & SCHEDULER
     optimizer = optim.Adam(model.parameters(), lr=0.0001, betas=(0.9, 0.999), eps=1e-08, weight_decay=1e-5)
-    scheduler = ReduceLROnPlateau(optimizer, factor=0.1, patience=5, mode='min')
+    scheduler = ReduceLROnPlateau(optimizer, factor=0.1, patience=5, mode='min', verbose=True)
     # -------------------- SETTINGS: LOSS
     loss_fn = torch.nn.BCEWithLogitsLoss(size_average=True)
     # ---- Load checkpoint
@@ -63,48 +66,50 @@ def train(path_data_train, path_data_valid, model_name, model_pretrained, batch_
         model_checkpoint = torch.load(checkpoint)
         model.load_state_dict(model_checkpoint['state_dict'])
         optimizer.load_state_dict(model_checkpoint['optimizer'])
-    # ---- TRAIN THE NETWORK
-    loss_min, auroc_max = epoch_valid(model, data_loader_valid)
-    print('Initial loss = ' + str(loss_min))
-    for epoch in range(0, epoch_num):
-        epoch_train(model, data_loader_train, optimizer, loss_fn)
-        loss, auroc = epoch_valid(model, data_loader_valid)
-        timestamp_now = time.strftime("%Y%m%d") + '-' + time.strftime("%H%M%S")
-        scheduler.step(loss)
-        if loss < loss_min:
-            loss_min = loss
-            torch.save({'epoch': epoch + 1, 'state_dict': model.state_dict(), 'best_loss': loss_min,
-                        'optimizer': optimizer.state_dict()}, 'm-' + timestamp + '.pth.tar')
-            print('Epoch [' + str(epoch + 1) + '] [save] [' + timestamp_now + '] loss= ' +
-                  str(loss) + '  auroc = ' + str(auroc))
-        else:
-            print('Epoch [' + str(epoch + 1) + '] [----] [' + timestamp_now + '] loss= ' +
-                  str(loss) + '  auroc = ' + str(auroc))
+    # Write Tensorboard
+    with FileWriter(path_log) as writer:
+        # ---- TRAIN THE NETWORK
+        loss_min, auroc_max = epoch_valid(model, data_loader_valid)
+        print('Initial: valid-loss= ' + str(loss_min) + "  auroc= " + str(auroc_max))
+        writer.add_scalar(tag="valid-loss", scalar_value=loss_min, global_step=0)
+        writer.add_scalar(tag="valid-auroc", scalar_value=auroc_max, global_step=0)
+        for epoch in range(0, epoch_num):
+            train_loss = epoch_train(model, data_loader_train, optimizer, loss_fn)
+            writer.add_scalar(tag="train-loss", scalar_value=train_loss, global_step=epoch + 1)
+            loss, auroc = epoch_valid(model, data_loader_valid)
+            timestamp_now = time.strftime("%Y%m%d") + '-' + time.strftime("%H%M%S")
+            scheduler.step(loss)
+            if loss < loss_min:
+                loss_min = loss
+                torch.save({'epoch': epoch + 1, 'state_dict': model.state_dict(), 'best_loss': loss_min,
+                            'optimizer': optimizer.state_dict()}, path_model)
+                print('Epoch [' + str(epoch + 1) + '] [save] [' + timestamp_now + '] train-loss= ' + str(
+                    train_loss) + '  valid-loss= ' + str(loss) + '  auroc= ' + str(auroc))
+                writer.add_scalar(tag="valid-loss", scalar_value=loss, global_step=epoch + 1)
+                writer.add_scalar(tag="valid-auroc", scalar_value=auroc, global_step=epoch + 1)
+            else:
+                print('Epoch [' + str(epoch + 1) + '] [----] [' + timestamp_now + '] train-loss= ' + str(
+                    train_loss) + '  valid-loss= ' + str(loss) + '  auroc= ' + str(auroc))
+                writer.add_scalar(tag="valid-loss", scalar_value=loss, global_step=epoch + 1)
+                writer.add_scalar(tag="valid-auroc", scalar_value=auroc, global_step=epoch + 1)
 
 
 def epoch_train(model, data_loader, optimizer, loss_fn):
     model.train()
+    running_loss, running_norm = 0.0, 0.0
     for (x, y) in data_loader:
         x = x.to(DEVICE)
         y = y.to(torch.float32).to(DEVICE)
         loss = loss_fn(model(x).view(-1), y)
+        running_loss = running_loss * EMA_ALPHA_TRAIN_LOSS + loss.item()
+        running_norm = running_norm * EMA_ALPHA_TRAIN_LOSS + 1.0
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
+    return running_loss / running_norm
 
 
 def epoch_valid(model, data_loader):
-    # model.eval()
-    # num, loss_value, loss_sum = 0, 0, 0
-    # for (x, y) in data_loader:
-    #     x = x.to(DEVICE)
-    #     y = y.to(DEVICE)
-    #     with torch.no_grad():
-    #         loss = loss_fn(model(x).view(-1), y)
-    #     loss_sum += loss
-    #     loss_value += loss.data[0]
-    #     num += 1
-    # return loss_value / num, loss_sum / num
     true = torch.LongTensor()
     score = torch.FloatTensor()
     bce = []
@@ -130,7 +135,7 @@ def compute_auroc(true, score):
     return roc_auc_score(true, score)
 
 
-def test(path_data, path_model, model_name, model_pretrained, batch_size, img_size, crop_size, timestamp):
+def test(*, path_data, path_model, model_name, model_pretrained, batch_size, img_size, crop_size):
     cudnn.benchmark = True
     # -------------------- SETTINGS: NETWORK ARCHITECTURE, MODEL LOAD
     if model_name == 'DENSE-NET-121':
@@ -173,5 +178,5 @@ def test(path_data, path_model, model_name, model_pretrained, batch_size, img_si
         bce.append(loss_fn(y_hat, y.to(torch.float32)))
     loss, auroc = torch.Tensor(bce).mean().item(), compute_auroc(true, score)
     auroc = compute_auroc(true, score)
-    print('loss = ' + loss + '  AUROC = ', auroc)
+    print('loss = ' + str(loss) + '  AUROC = ' + str(auroc))
     return
