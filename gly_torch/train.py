@@ -67,31 +67,32 @@ def train(*, path_data_train, path_data_valid, path_log, path_model, model_name,
         model.load_state_dict(model_checkpoint['state_dict'])
         optimizer.load_state_dict(model_checkpoint['optimizer'])
     # Write Tensorboard
-    with FileWriter(path_log) as writer:
-        # ---- TRAIN THE NETWORK
-        loss_min, auroc_max = epoch_valid(model, data_loader_valid)
-        print('Initial: valid-loss= ' + str(loss_min) + "  auroc= " + str(auroc_max))
-        writer.add_scalar(tag="valid-loss", scalar_value=loss_min, global_step=0)
-        writer.add_scalar(tag="valid-auroc", scalar_value=auroc_max, global_step=0)
-        for epoch in range(0, epoch_num):
-            train_loss = epoch_train(model, data_loader_train, optimizer, loss_fn)
-            writer.add_scalar(tag="train-loss", scalar_value=train_loss, global_step=epoch + 1)
-            loss, auroc = epoch_valid(model, data_loader_valid)
-            timestamp_now = time.strftime("%Y%m%d") + '-' + time.strftime("%H%M%S")
-            scheduler.step(loss)
-            if loss < loss_min:
-                loss_min = loss
-                torch.save({'epoch': epoch + 1, 'state_dict': model.state_dict(), 'best_loss': loss_min,
-                            'optimizer': optimizer.state_dict()}, path_model)
-                print('Epoch [' + str(epoch + 1) + '] [save] [' + timestamp_now + '] train-loss= ' + str(
-                    train_loss) + '  valid-loss= ' + str(loss) + '  auroc= ' + str(auroc))
-                writer.add_scalar(tag="valid-loss", scalar_value=loss, global_step=epoch + 1)
-                writer.add_scalar(tag="valid-auroc", scalar_value=auroc, global_step=epoch + 1)
-            else:
-                print('Epoch [' + str(epoch + 1) + '] [----] [' + timestamp_now + '] train-loss= ' + str(
-                    train_loss) + '  valid-loss= ' + str(loss) + '  auroc= ' + str(auroc))
-                writer.add_scalar(tag="valid-loss", scalar_value=loss, global_step=epoch + 1)
-                writer.add_scalar(tag="valid-auroc", scalar_value=auroc, global_step=epoch + 1)
+    writer = FileWriter(path_log)
+    # ---- TRAIN THE NETWORK
+    loss_min, auroc_max = epoch_valid(model, data_loader_valid)
+    print('Initial: valid-loss= ' + str(loss_min) + "  auroc= " + str(auroc_max))
+    writer.add_scalar(tag="valid-loss", scalar_value=loss_min, global_step=0)
+    writer.add_scalar(tag="valid-auroc", scalar_value=auroc_max, global_step=0)
+    for epoch in range(0, epoch_num):
+        train_loss = epoch_train(model, data_loader_train, optimizer, loss_fn)
+        writer.add_scalar(tag="train-loss", scalar_value=train_loss, global_step=epoch + 1)
+        loss, auroc = epoch_valid(model, data_loader_valid)
+        timestamp_now = time.strftime("%Y%m%d") + '-' + time.strftime("%H%M%S")
+        scheduler.step(loss)
+        if loss < loss_min:
+            loss_min = loss
+            torch.save({'epoch': epoch + 1, 'state_dict': model.state_dict(), 'best_loss': loss_min,
+                        'optimizer': optimizer.state_dict()}, path_model)
+            print('Epoch [' + str(epoch + 1) + '] [save] [' + timestamp_now + '] train-loss= ' + str(
+                train_loss) + '  valid-loss= ' + str(loss) + '  auroc= ' + str(auroc))
+            writer.add_scalar(tag="valid-loss", scalar_value=loss, global_step=epoch + 1)
+            writer.add_scalar(tag="valid-auroc", scalar_value=auroc, global_step=epoch + 1)
+        else:
+            print('Epoch [' + str(epoch + 1) + '] [----] [' + timestamp_now + '] train-loss= ' + str(
+                train_loss) + '  valid-loss= ' + str(loss) + '  auroc= ' + str(auroc))
+            writer.add_scalar(tag="valid-loss", scalar_value=loss, global_step=epoch + 1)
+            writer.add_scalar(tag="valid-auroc", scalar_value=auroc, global_step=epoch + 1)
+    writer.close()
 
 
 def epoch_train(model, data_loader, optimizer, loss_fn):
