@@ -5,7 +5,7 @@ import torch.backends.cudnn as cudnn
 import torch.optim as optim
 import torchvision.transforms as transforms
 from sklearn.metrics.ranking import roc_auc_score
-from tensorboardX import FileWriter
+from tensorboardX import SummaryWriter
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.data import DataLoader
 from torchvision.datasets import ImageFolder
@@ -67,7 +67,7 @@ def train(*, path_data_train, path_data_valid, path_log, path_model, model_name,
         model.load_state_dict(model_checkpoint['state_dict'])
         optimizer.load_state_dict(model_checkpoint['optimizer'])
     # Write Tensorboard
-    writer = FileWriter(path_log)
+    writer = SummaryWriter(log_dir=path_log)
     # ---- TRAIN THE NETWORK
     loss_min, auroc_max = epoch_valid(model, data_loader_valid)
     print('Initial: valid-loss= ' + str(loss_min) + "  auroc= " + str(auroc_max))
