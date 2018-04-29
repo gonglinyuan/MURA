@@ -25,7 +25,7 @@ def run_train():
     path_model = '../../trained_models/' + timestamp + '/m-' + timestamp + '.pth.tar'
 
     device = None
-    opts = getopt.getopt(sys.argv[1:], "d:", ["device="])
+    opts, _ = getopt.getopt(sys.argv[1:], "d:", ["device="])
     for opt, arg in opts:
         if opt in ("-d", "--device") and torch.cuda.is_available():
             device = torch.device("cuda:" + str(arg))

@@ -26,7 +26,6 @@ def run_train():
 
     device = None
     opts, _ = getopt.getopt(sys.argv[1:], "d:", ["device="])
-    print(opts)
     for opt, arg in opts:
         if opt in ("-d", "--device") and torch.cuda.is_available():
             device = torch.device("cuda:" + str(arg))
