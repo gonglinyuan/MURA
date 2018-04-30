@@ -54,3 +54,13 @@ def augment_transform_rotation_warp():
         transforms.ToTensor(),
         NORMALIZE
     ])
+
+
+def augment_transform_slight_no_shear():
+    return transforms.Compose([
+        transforms.RandomAffine(degrees=20),
+        transforms.RandomResizedCrop(CROP_SIZE),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+        NORMALIZE
+    ])

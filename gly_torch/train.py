@@ -26,7 +26,7 @@ EMA_ALPHA_TRAIN_LOSS = 0.99
 
 
 def train(*, path_data_train, path_data_valid, path_log, path_model, model_name, model_pretrained, batch_size,
-          epoch_num, checkpoint, device, transform_train, transform_valid):
+          epoch_num, checkpoint, device, transform_train, transform_valid, optimizer_fn):
     # -------------------- SETTINGS: NETWORK ARCHITECTURE
     if model_name == 'DENSE-NET-121':
         model = DenseNet121(class_count=1, is_trained=model_pretrained).to(device)
@@ -59,8 +59,9 @@ def train(*, path_data_train, path_data_valid, path_log, path_model, model_name,
         ImageFolder(path_data_valid, transform=transform_valid),
         batch_size=batch_size, shuffle=False, num_workers=20, pin_memory=True)
     # -------------------- SETTINGS: OPTIMIZER & SCHEDULER
-    optimizer = optim.Adam(model.parameters(), lr=0.0001, betas=(0.9, 0.999), eps=1e-08, weight_decay=1e-5)
-    scheduler = ReduceLROnPlateau(optimizer, factor=0.1, patience=5, mode='min', verbose=True)
+    # optimizer = optim.Adam(model.parameters(), lr=0.0001, betas=(0.9, 0.999), eps=1e-08, weight_decay=1e-5)
+    # scheduler = ReduceLROnPlateau(optimizer, factor=0.1, patience=5, mode='min', verbose=True)
+    optimizer, scheduler = optimizer_fn(model.parameters())
     # -------------------- SETTINGS: LOSS
     loss_fn = torch.nn.BCEWithLogitsLoss(size_average=True)
     # ---- Load checkpoint
