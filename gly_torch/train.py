@@ -2,17 +2,12 @@ import time
 
 import torch
 import torch.backends.cudnn as cudnn
-import torch.optim as optim
-import torchvision.transforms as transforms
 from sklearn.metrics.ranking import roc_auc_score
 from tensorboardX import SummaryWriter
-from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.data import DataLoader
 from torchvision.datasets import ImageFolder
 
-from convnet_models import DenseNet121
-from convnet_models import DenseNet169
-from convnet_models import DenseNet201
+from convnet_models import ConvnetModel
 
 DATA_MEAN = 0.20558404267255
 DATA_STD = 0.17694948680626902473216631207703
@@ -28,15 +23,16 @@ EMA_ALPHA_TRAIN_LOSS = 0.99
 def train(*, path_data_train, path_data_valid, path_log, path_model, model_name, model_pretrained, batch_size,
           epoch_num, checkpoint, device, transform_train, transform_valid, optimizer_fn):
     # -------------------- SETTINGS: NETWORK ARCHITECTURE
-    if model_name == 'DENSE-NET-121':
-        model = DenseNet121(class_count=1, is_trained=model_pretrained).to(device)
-    elif model_name == 'DENSE-NET-169':
-        model = DenseNet169(class_count=1, is_trained=model_pretrained).to(device)
-    elif model_name == 'DENSE-NET-201':
-        model = DenseNet201(class_count=1, is_trained=model_pretrained).to(device)
-    else:
-        print('Error: architecture not found')
-        return
+    # if model_name == 'DENSE-NET-121':
+    #     model = DenseNet121(class_count=1, is_trained=model_pretrained).to(device)
+    # elif model_name == 'DENSE-NET-169':
+    #     model = DenseNet169(class_count=1, is_trained=model_pretrained).to(device)
+    # elif model_name == 'DENSE-NET-201':
+    #     model = DenseNet201(class_count=1, is_trained=model_pretrained).to(device)
+    # else:
+    #     print('Error: architecture not found')
+    #     return
+    model = ConvnetModel(model_name, class_count=1, is_trained=model_pretrained).to(device)
     # # -------------------- SETTINGS: DATA TRANSFORMS
     # normalize = transforms.Normalize([DATA_MEAN, DATA_MEAN, DATA_MEAN], [DATA_STD, DATA_STD, DATA_STD])
     # transform_sequence_train = transforms.Compose([
@@ -142,15 +138,16 @@ def compute_auroc(true, score):
 def test(*, path_data, path_model, model_name, model_pretrained, batch_size, device, transform):
     cudnn.benchmark = True
     # -------------------- SETTINGS: NETWORK ARCHITECTURE, MODEL LOAD
-    if model_name == 'DENSE-NET-121':
-        model = DenseNet121(class_count=1, is_trained=model_pretrained).to(device)
-    elif model_name == 'DENSE-NET-169':
-        model = DenseNet169(class_count=1, is_trained=model_pretrained).to(device)
-    elif model_name == 'DENSE-NET-201':
-        model = DenseNet201(class_count=1, is_trained=model_pretrained).to(device)
-    else:
-        print('Error: architecture not found')
-        return
+    # if model_name == 'DENSE-NET-121':
+    #     model = DenseNet121(class_count=1, is_trained=model_pretrained).to(device)
+    # elif model_name == 'DENSE-NET-169':
+    #     model = DenseNet169(class_count=1, is_trained=model_pretrained).to(device)
+    # elif model_name == 'DENSE-NET-201':
+    #     model = DenseNet201(class_count=1, is_trained=model_pretrained).to(device)
+    # else:
+    #     print('Error: architecture not found')
+    #     return
+    model = ConvnetModel(model_name, class_count=1, is_trained=model_pretrained).to(device)
     model_checkpoint = torch.load(path_model)
     model.load_state_dict(model_checkpoint['state_dict'])
     # -------------------- SETTINGS: DATA TRANSFORMS, TEN CROPS
