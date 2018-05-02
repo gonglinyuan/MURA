@@ -46,9 +46,9 @@ def run_train():
         epoch_num=epoch_num,
         checkpoint=None,
         device=device,
-        transform_train=data_augmentation.augment_transform_rotation(),
+        transform_train=data_augmentation.augment_transform_slight(),
         transform_valid=data_augmentation.valid_transform(),
-        optimizer_fn=optimizers.adam_optimizers
+        optimizer_fn=optimizers.sgd_optimizers
     )
 
     print('Testing the trained model')

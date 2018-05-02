@@ -19,7 +19,7 @@ def run_train():
     path_data_train = '../../MURA_trainval_keras'
     path_data_valid = '../../MURA_valid1_keras'
     path_log = '../../trained_models/' + timestamp + '/tb'
-    model_name = 'DENSENET169'
+    model_name = 'VGG19-BN'
     model_pretrained = True
     batch_size = 16
     epoch_num = 100
@@ -46,7 +46,7 @@ def run_train():
         epoch_num=epoch_num,
         checkpoint=None,
         device=device,
-        transform_train=data_augmentation.augment_transform_slight(),
+        transform_train=data_augmentation.default_transform(),
         transform_valid=data_augmentation.valid_transform(),
         optimizer_fn=optimizers.adam_optimizers
     )

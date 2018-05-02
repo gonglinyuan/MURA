@@ -15,48 +15,19 @@ IMG_SIZE = 256
 CROP_SIZE = 224
 
 CPU = torch.device("cpu")
-# device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 
 EMA_ALPHA_TRAIN_LOSS = 0.99
 
 
 def train(*, path_data_train, path_data_valid, path_log, path_model, model_name, model_pretrained, batch_size,
           epoch_num, checkpoint, device, transform_train, transform_valid, optimizer_fn):
-    # -------------------- SETTINGS: NETWORK ARCHITECTURE
-    # if model_name == 'DENSE-NET-121':
-    #     model = DenseNet121(class_count=1, is_trained=model_pretrained).to(device)
-    # elif model_name == 'DENSE-NET-169':
-    #     model = DenseNet169(class_count=1, is_trained=model_pretrained).to(device)
-    # elif model_name == 'DENSE-NET-201':
-    #     model = DenseNet201(class_count=1, is_trained=model_pretrained).to(device)
-    # else:
-    #     print('Error: architecture not found')
-    #     return
     model = ConvnetModel(model_name, class_count=1, is_trained=model_pretrained).to(device)
-    # # -------------------- SETTINGS: DATA TRANSFORMS
-    # normalize = transforms.Normalize([DATA_MEAN, DATA_MEAN, DATA_MEAN], [DATA_STD, DATA_STD, DATA_STD])
-    # transform_sequence_train = transforms.Compose([
-    #     transforms.RandomResizedCrop(crop_size),
-    #     transforms.RandomHorizontalFlip(),
-    #     transforms.ToTensor(),
-    #     normalize
-    # ])
-    # transform_sequence_valid = transforms.Compose([
-    #     transforms.Resize(img_size),
-    #     transforms.TenCrop(crop_size),
-    #     transforms.Lambda(lambda crops: torch.stack([transforms.ToTensor()(crop) for crop in crops])),
-    #     transforms.Lambda(lambda crops: torch.stack([normalize(crop) for crop in crops]))
-    # ])
-    # -------------------- SETTINGS: DATASET BUILDERS
     data_loader_train = DataLoader(
         ImageFolder(path_data_train, transform=transform_train),
         batch_size=batch_size, shuffle=True, num_workers=20, pin_memory=True)
     data_loader_valid = DataLoader(
         ImageFolder(path_data_valid, transform=transform_valid),
         batch_size=batch_size, shuffle=False, num_workers=20, pin_memory=True)
-    # -------------------- SETTINGS: OPTIMIZER & SCHEDULER
-    # optimizer = optim.Adam(model.parameters(), lr=0.0001, betas=(0.9, 0.999), eps=1e-08, weight_decay=1e-5)
-    # scheduler = ReduceLROnPlateau(optimizer, factor=0.1, patience=5, mode='min', verbose=True)
     optimizer, scheduler = optimizer_fn(model.parameters())
     # -------------------- SETTINGS: LOSS
     loss_fn = torch.nn.BCEWithLogitsLoss(size_average=True)
@@ -137,28 +108,9 @@ def compute_auroc(true, score):
 
 def test(*, path_data, path_model, model_name, model_pretrained, batch_size, device, transform):
     cudnn.benchmark = True
-    # -------------------- SETTINGS: NETWORK ARCHITECTURE, MODEL LOAD
-    # if model_name == 'DENSE-NET-121':
-    #     model = DenseNet121(class_count=1, is_trained=model_pretrained).to(device)
-    # elif model_name == 'DENSE-NET-169':
-    #     model = DenseNet169(class_count=1, is_trained=model_pretrained).to(device)
-    # elif model_name == 'DENSE-NET-201':
-    #     model = DenseNet201(class_count=1, is_trained=model_pretrained).to(device)
-    # else:
-    #     print('Error: architecture not found')
-    #     return
     model = ConvnetModel(model_name, class_count=1, is_trained=model_pretrained).to(device)
     model_checkpoint = torch.load(path_model)
     model.load_state_dict(model_checkpoint['state_dict'])
-    # -------------------- SETTINGS: DATA TRANSFORMS, TEN CROPS
-    # normalize = transforms.Normalize([DATA_MEAN, DATA_MEAN, DATA_MEAN], [DATA_STD, DATA_STD, DATA_STD])
-    # transform_sequence_test = transforms.Compose([
-    #     transforms.Resize(IMG_SIZE),
-    #     transforms.TenCrop(CROP_SIZE),
-    #     transforms.Lambda(lambda crops: torch.stack([transforms.ToTensor()(crop) for crop in crops])),
-    #     transforms.Lambda(lambda crops: torch.stack([normalize(crop) for crop in crops]))
-    # ])
-    # -------------------- SETTINGS: DATASET BUILDERS
     data_loader_test = DataLoader(
         ImageFolder(path_data, transform=transform),
         batch_size=batch_size, shuffle=False, num_workers=10, pin_memory=True)
