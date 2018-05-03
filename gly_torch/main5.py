@@ -19,7 +19,7 @@ def run_train():
     path_data_train = '../../MURA_trainval_keras'
     path_data_valid = '../../MURA_valid1_keras'
     path_log = '../../trained_models/' + timestamp + '/tb'
-    model_name = 'VGG19-BN'
+    model_name = 'VGG11-BN'
     model_pretrained = True
     batch_size = 16
     epoch_num = 100
@@ -48,7 +48,7 @@ def run_train():
         device=device,
         transform_train=data_augmentation.augment_transform_slight(),
         transform_valid=data_augmentation.valid_transform(),
-        optimizer_fn=optimizers.nsgd_optimizers
+        optimizer_fn=optimizers.adam_optimizers
     )
 
     print('Testing the trained model')
