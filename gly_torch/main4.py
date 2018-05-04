@@ -22,7 +22,7 @@ def run_train():
     model_name = 'NASNETALARGE'
     model_pretrained = True
     # batch_size = 16
-    batch_size = 8
+    batch_size = 6
     epoch_num = 100
     path_model = '../../trained_models/' + timestamp + '/m-' + timestamp + '.pth.tar'
 
