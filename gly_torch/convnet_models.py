@@ -24,7 +24,10 @@ class ConvnetModel(nn.Module):
     def __init__(self, model_name, *, class_count, is_trained):
         super(ConvnetModel, self).__init__()
         # load model and weights
-        self.convnet = MODELS[model_name](pretrained=is_trained)
+        if model_name.startswith('NASNET'):
+            self.convnet = MODELS[model_name](pretrained='imagenet+background')
+        else:
+            self.convnet = MODELS[model_name](pretrained=is_trained)
         # get input size of the last layer
         if model_name.startswith('DENSENET'):
             kernel_count = self.convnet.classifier.in_features
