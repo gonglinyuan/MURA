@@ -16,6 +16,15 @@ def default_transform():
         transforms.Normalize([DATA_MEAN, DATA_MEAN, DATA_MEAN], [DATA_STD, DATA_STD, DATA_STD])
     ])
 
+def default_transform_revised():
+    return transforms.Compose([
+        transforms.Resize(IMG_SIZE),
+        transforms.RandomCrop(CROP_SIZE),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+        transforms.Normalize([DATA_MEAN, DATA_MEAN, DATA_MEAN], [DATA_STD, DATA_STD, DATA_STD])
+    ])
+
 
 def valid_transform():
     return transforms.Compose([
@@ -30,6 +39,16 @@ def augment_transform_slight():
     return transforms.Compose([
         transforms.RandomAffine(degrees=20, shear=10),
         transforms.RandomResizedCrop(CROP_SIZE),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+        NORMALIZE
+    ])
+
+def augment_transform_slight_revised():
+    return transforms.Compose([
+        transforms.RandomAffine(degrees=20, shear=10),
+        transforms.Resize(IMG_SIZE),
+        transforms.RandomCrop(CROP_SIZE),
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
         NORMALIZE
