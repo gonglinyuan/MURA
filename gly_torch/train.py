@@ -9,11 +9,6 @@ from torchvision.datasets import ImageFolder
 
 from convnet_models import ConvnetModel
 
-DATA_MEAN = 0.20558404267255
-DATA_STD = 0.17694948680626902473216631207703
-IMG_SIZE = 256
-CROP_SIZE = 224
-
 CPU = torch.device("cpu")
 
 EMA_ALPHA_TRAIN_LOSS = 0.99

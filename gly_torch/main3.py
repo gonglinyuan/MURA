@@ -46,8 +46,8 @@ def run_train():
         epoch_num=epoch_num,
         checkpoint=None,
         device=device,
-        transform_train=data_augmentation.default_transform(),
-        transform_valid=data_augmentation.valid_transform(),
+        transform_train=data_augmentation.default_transform(img_size=354, crop_size=331, target_mean=0.5, target_std=0.5),
+        transform_valid=data_augmentation.valid_transform(img_size=354, crop_size=331, target_mean=0.5, target_std=0.5),
         optimizer_fn=optimizers.adam_optimizers
     )
 

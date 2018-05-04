@@ -3,83 +3,104 @@ import torchvision.transforms as transforms
 
 DATA_MEAN = 0.20558404267255
 DATA_STD = 0.17694948680626902473216631207703
-IMG_SIZE = 256
-CROP_SIZE = 224
-NORMALIZE = transforms.Normalize([DATA_MEAN, DATA_MEAN, DATA_MEAN], [DATA_STD, DATA_STD, DATA_STD])
+DEFAULT_IMG_SIZE = 256
+DEFAULT_CROP_SIZE = 224
+DEFAULT_NORMALIZE = transforms.Normalize([DATA_MEAN, DATA_MEAN, DATA_MEAN], [DATA_STD, DATA_STD, DATA_STD])
 
 
-def default_transform():
+def default_transform(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE, target_mean=0.0, target_std=1.0):
+    miu, sigma = DATA_MEAN - target_mean * DATA_STD / target_std, DATA_STD / target_std
+    normalize = transforms.Normalize([miu, miu, miu], [sigma, sigma, sigma])
     return transforms.Compose([
-        transforms.RandomResizedCrop(CROP_SIZE),
+        transforms.RandomResizedCrop(crop_size),
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
-        transforms.Normalize([DATA_MEAN, DATA_MEAN, DATA_MEAN], [DATA_STD, DATA_STD, DATA_STD])
-    ])
-
-def default_transform_revised():
-    return transforms.Compose([
-        transforms.Resize(IMG_SIZE),
-        transforms.RandomCrop(CROP_SIZE),
-        transforms.RandomHorizontalFlip(),
-        transforms.ToTensor(),
-        transforms.Normalize([DATA_MEAN, DATA_MEAN, DATA_MEAN], [DATA_STD, DATA_STD, DATA_STD])
+        normalize
     ])
 
 
-def valid_transform():
+def default_transform_revised(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE, target_mean=0.0, target_std=1.0):
+    miu, sigma = DATA_MEAN - target_mean * DATA_STD / target_std, DATA_STD / target_std
+    normalize = transforms.Normalize([miu, miu, miu], [sigma, sigma, sigma])
     return transforms.Compose([
-        transforms.Resize(IMG_SIZE),
-        transforms.TenCrop(CROP_SIZE),
+        transforms.Resize(img_size),
+        transforms.RandomCrop(crop_size),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+        normalize
+    ])
+
+
+def valid_transform(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE, target_mean=0.0, target_std=1.0):
+    miu, sigma = DATA_MEAN - target_mean * DATA_STD / target_std, DATA_STD / target_std
+    normalize = transforms.Normalize([miu, miu, miu], [sigma, sigma, sigma])
+    return transforms.Compose([
+        transforms.Resize(img_size),
+        transforms.TenCrop(crop_size),
         transforms.Lambda(lambda crops: torch.stack([transforms.ToTensor()(crop) for crop in crops])),
-        transforms.Lambda(lambda crops: torch.stack([NORMALIZE(crop) for crop in crops]))
+        transforms.Lambda(lambda crops: torch.stack([normalize(crop) for crop in crops]))
     ])
 
 
-def augment_transform_slight():
+def augment_transform_slight(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE, target_mean=0.0, target_std=1.0):
+    miu, sigma = DATA_MEAN - target_mean * DATA_STD / target_std, DATA_STD / target_std
+    normalize = transforms.Normalize([miu, miu, miu], [sigma, sigma, sigma])
     return transforms.Compose([
         transforms.RandomAffine(degrees=20, shear=10),
-        transforms.RandomResizedCrop(CROP_SIZE),
+        transforms.RandomResizedCrop(crop_size),
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
-        NORMALIZE
+        normalize
     ])
 
-def augment_transform_slight_revised():
+
+def augment_transform_slight_revised(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE, target_mean=0.0,
+                                     target_std=1.0):
+    miu, sigma = DATA_MEAN - target_mean * DATA_STD / target_std, DATA_STD / target_std
+    normalize = transforms.Normalize([miu, miu, miu], [sigma, sigma, sigma])
     return transforms.Compose([
         transforms.RandomAffine(degrees=20, shear=10),
-        transforms.Resize(IMG_SIZE),
-        transforms.RandomCrop(CROP_SIZE),
+        transforms.Resize(img_size),
+        transforms.RandomCrop(crop_size),
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
-        NORMALIZE
+        normalize
     ])
 
 
-def augment_transform_rotation():
+def augment_transform_rotation(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE, target_mean=0.0, target_std=1.0):
+    miu, sigma = DATA_MEAN - target_mean * DATA_STD / target_std, DATA_STD / target_std
+    normalize = transforms.Normalize([miu, miu, miu], [sigma, sigma, sigma])
     return transforms.Compose([
         transforms.RandomRotation(degrees=180),
-        transforms.RandomResizedCrop(CROP_SIZE),
+        transforms.RandomResizedCrop(crop_size),
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
-        NORMALIZE
+        normalize
     ])
 
 
-def augment_transform_rotation_warp():
+def augment_transform_rotation_warp(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE, target_mean=0.0,
+                                    target_std=1.0):
+    miu, sigma = DATA_MEAN - target_mean * DATA_STD / target_std, DATA_STD / target_std
+    normalize = transforms.Normalize([miu, miu, miu], [sigma, sigma, sigma])
     return transforms.Compose([
         transforms.RandomAffine(degrees=180, shear=10),
-        transforms.RandomResizedCrop(CROP_SIZE),
+        transforms.RandomResizedCrop(crop_size),
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
-        NORMALIZE
+        normalize
     ])
 
 
-def augment_transform_slight_no_shear():
+def augment_transform_slight_no_shear(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE, target_mean=0.0,
+                                      target_std=1.0):
+    miu, sigma = DATA_MEAN - target_mean * DATA_STD / target_std, DATA_STD / target_std
+    normalize = transforms.Normalize([miu, miu, miu], [sigma, sigma, sigma])
     return transforms.Compose([
         transforms.RandomAffine(degrees=20),
-        transforms.RandomResizedCrop(CROP_SIZE),
+        transforms.RandomResizedCrop(crop_size),
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
-        NORMALIZE
+        normalize
     ])
