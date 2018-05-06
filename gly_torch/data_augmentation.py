@@ -1,5 +1,6 @@
 import torch
 import torchvision.transforms as transforms
+import numpy as np
 
 DATA_MEAN = 0.20558404267255
 DATA_STD = 0.17694948680626902473216631207703
@@ -9,8 +10,9 @@ DEFAULT_NORMALIZE = transforms.Normalize([DATA_MEAN, DATA_MEAN, DATA_MEAN], [DAT
 
 
 def default_transform(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE, target_mean=0.0, target_std=1.0):
-    miu, sigma = DATA_MEAN - target_mean * DATA_STD / target_std, DATA_STD / target_std
-    normalize = transforms.Normalize([miu, miu, miu], [sigma, sigma, sigma])
+    MEAN, STD = DATA_MEAN * np.ones(3), DATA_STD * np.ones(3)
+    miu, sigma = MEAN - target_mean * STD / target_std, STD / target_std
+    normalize = transforms.Normalize(miu.tolist(), sigma.tolist())
     return transforms.Compose([
         transforms.RandomResizedCrop(crop_size),
         transforms.RandomHorizontalFlip(),
@@ -20,8 +22,9 @@ def default_transform(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE, ta
 
 
 def default_transform_revised(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE, target_mean=0.0, target_std=1.0):
-    miu, sigma = DATA_MEAN - target_mean * DATA_STD / target_std, DATA_STD / target_std
-    normalize = transforms.Normalize([miu, miu, miu], [sigma, sigma, sigma])
+    MEAN, STD = DATA_MEAN * np.ones(3), DATA_STD * np.ones(3)
+    miu, sigma = MEAN - target_mean * STD / target_std, STD / target_std
+    normalize = transforms.Normalize(miu.tolist(), sigma.tolist())
     return transforms.Compose([
         transforms.Resize(img_size),
         transforms.RandomCrop(crop_size),
@@ -32,8 +35,9 @@ def default_transform_revised(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_
 
 
 def valid_transform(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE, target_mean=0.0, target_std=1.0):
-    miu, sigma = DATA_MEAN - target_mean * DATA_STD / target_std, DATA_STD / target_std
-    normalize = transforms.Normalize([miu, miu, miu], [sigma, sigma, sigma])
+    MEAN, STD = DATA_MEAN * np.ones(3), DATA_STD * np.ones(3)
+    miu, sigma = MEAN - target_mean * STD / target_std, STD / target_std
+    normalize = transforms.Normalize(miu.tolist(), sigma.tolist())
     return transforms.Compose([
         transforms.Resize(img_size),
         transforms.TenCrop(crop_size),
@@ -43,8 +47,9 @@ def valid_transform(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE, targ
 
 
 def augment_transform_slight(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE, target_mean=0.0, target_std=1.0):
-    miu, sigma = DATA_MEAN - target_mean * DATA_STD / target_std, DATA_STD / target_std
-    normalize = transforms.Normalize([miu, miu, miu], [sigma, sigma, sigma])
+    MEAN, STD = DATA_MEAN * np.ones(3), DATA_STD * np.ones(3)
+    miu, sigma = MEAN - target_mean * STD / target_std, STD / target_std
+    normalize = transforms.Normalize(miu.tolist(), sigma.tolist())
     return transforms.Compose([
         transforms.RandomAffine(degrees=20, shear=10),
         transforms.RandomResizedCrop(crop_size),
@@ -56,8 +61,9 @@ def augment_transform_slight(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_S
 
 def augment_transform_slight_revised(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE, target_mean=0.0,
                                      target_std=1.0):
-    miu, sigma = DATA_MEAN - target_mean * DATA_STD / target_std, DATA_STD / target_std
-    normalize = transforms.Normalize([miu, miu, miu], [sigma, sigma, sigma])
+    MEAN, STD = DATA_MEAN * np.ones(3), DATA_STD * np.ones(3)
+    miu, sigma = MEAN - target_mean * STD / target_std, STD / target_std
+    normalize = transforms.Normalize(miu.tolist(), sigma.tolist())
     return transforms.Compose([
         transforms.RandomAffine(degrees=20, shear=10),
         transforms.Resize(img_size),
@@ -69,8 +75,9 @@ def augment_transform_slight_revised(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAUL
 
 
 def augment_transform_rotation(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE, target_mean=0.0, target_std=1.0):
-    miu, sigma = DATA_MEAN - target_mean * DATA_STD / target_std, DATA_STD / target_std
-    normalize = transforms.Normalize([miu, miu, miu], [sigma, sigma, sigma])
+    MEAN, STD = DATA_MEAN * np.ones(3), DATA_STD * np.ones(3)
+    miu, sigma = MEAN - target_mean * STD / target_std, STD / target_std
+    normalize = transforms.Normalize(miu.tolist(), sigma.tolist())
     return transforms.Compose([
         transforms.RandomRotation(degrees=180),
         transforms.RandomResizedCrop(crop_size),
@@ -82,8 +89,9 @@ def augment_transform_rotation(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP
 
 def augment_transform_rotation_warp(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE, target_mean=0.0,
                                     target_std=1.0):
-    miu, sigma = DATA_MEAN - target_mean * DATA_STD / target_std, DATA_STD / target_std
-    normalize = transforms.Normalize([miu, miu, miu], [sigma, sigma, sigma])
+    MEAN, STD = DATA_MEAN * np.ones(3), DATA_STD * np.ones(3)
+    miu, sigma = MEAN - target_mean * STD / target_std, STD / target_std
+    normalize = transforms.Normalize(miu.tolist(), sigma.tolist())
     return transforms.Compose([
         transforms.RandomAffine(degrees=180, shear=10),
         transforms.RandomResizedCrop(crop_size),
@@ -95,8 +103,9 @@ def augment_transform_rotation_warp(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT
 
 def augment_transform_slight_no_shear(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE, target_mean=0.0,
                                       target_std=1.0):
-    miu, sigma = DATA_MEAN - target_mean * DATA_STD / target_std, DATA_STD / target_std
-    normalize = transforms.Normalize([miu, miu, miu], [sigma, sigma, sigma])
+    MEAN, STD = DATA_MEAN * np.ones(3), DATA_STD * np.ones(3)
+    miu, sigma = MEAN - target_mean * STD / target_std, STD / target_std
+    normalize = transforms.Normalize(miu.tolist(), sigma.tolist())
     return transforms.Compose([
         transforms.RandomAffine(degrees=20),
         transforms.RandomResizedCrop(crop_size),

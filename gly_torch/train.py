@@ -97,7 +97,7 @@ def epoch_valid(model, data_loader, device):
 def compute_auroc(true, score):
     true = true.cpu().numpy()
     score = score.cpu().numpy()
-    roc_auc_score(true, score)
+    #roc_auc_score(true, score)
     return roc_auc_score(true, score)
 
 
