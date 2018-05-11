@@ -101,6 +101,20 @@ def augment_transform_rotation_warp(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT
     ])
 
 
+def augment_transform_rotation_warp_3(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE, target_mean=0.0,
+                                    target_std=1.0):
+    MEAN, STD = DATA_MEAN * np.ones(3), DATA_STD * np.ones(3)
+    miu, sigma = MEAN - target_mean * STD / target_std, STD / target_std
+    normalize = transforms.Normalize(miu.tolist(), sigma.tolist())
+    return transforms.Compose([
+        transforms.RandomAffine(degrees=180, shear=10),
+        transforms.RandomResizedCrop(crop_size, scale=(0.5, 1.0)),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+        normalize
+    ])
+
+
 def augment_transform_slight_no_shear(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE, target_mean=0.0,
                                       target_std=1.0):
     MEAN, STD = DATA_MEAN * np.ones(3), DATA_STD * np.ones(3)
