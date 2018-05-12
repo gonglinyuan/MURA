@@ -1,6 +1,7 @@
 import pretrainedmodels
 import torch.nn as nn
 import torchvision
+import pretrainedmodels.utils
 
 MODELS = {
     'DENSENET121': torchvision.models.densenet121,
@@ -23,7 +24,8 @@ MODELS = {
     'DUALPATHNET107_5k': pretrainedmodels.models.dpn107,
     'DUALPATHNET131': pretrainedmodels.models.dpn131,
     'DUALPATHNET92_5k': pretrainedmodels.models.dpn92,
-    'DUALPATHNET98': pretrainedmodels.models.dpn98
+    'DUALPATHNET98': pretrainedmodels.models.dpn98,
+    'INCEPTIONRESNETV2': pretrainedmodels.models.inceptionresnetv2
 }
 
 
@@ -31,7 +33,7 @@ class ConvnetModel(nn.Module):
     def __init__(self, model_name, *, class_count, is_trained):
         super(ConvnetModel, self).__init__()
         # load model and weights
-        if model_name.startswith('NASNET'):
+        if model_name.startswith('NASNET') or model_name.startswith('INCEPTION'):
             self.convnet = MODELS[model_name](pretrained='imagenet+background')
         elif model_name.startswith('SE'):
             self.convnet = MODELS[model_name](pretrained='imagenet')
@@ -51,7 +53,7 @@ class ConvnetModel(nn.Module):
             kernel_count = self.convnet.classifier[0].in_features
         elif model_name.startswith('RESNET'):
             kernel_count = self.convnet.fc.in_features
-        elif model_name.startswith('NASNET') or model_name.startswith('SE'):
+        elif model_name.startswith('NASNET') or model_name.startswith('SE') or model_name.startswith('INCEPTION'):
             kernel_count = self.convnet.last_linear.in_features
         else:
             print('ERROR')
@@ -59,7 +61,7 @@ class ConvnetModel(nn.Module):
         # add last layer
         if model_name.startswith('RESNET'):
             self.convnet.fc = nn.Linear(kernel_count, class_count)
-        elif model_name.startswith('NASNET') or model_name.startswith('SE'):
+        elif model_name.startswith('NASNET') or model_name.startswith('SE') or model_name.startswith('INCEPTION'):
             self.convnet.last_linear = nn.Linear(kernel_count, class_count)
         elif model_name.startswith('DUAL'):
             self.convnet.classifier = nn.Conv2d(kernel_count, class_count, kernel_size=1, bias=True)
