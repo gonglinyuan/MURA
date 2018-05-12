@@ -70,8 +70,8 @@ def runTest(path_model):
     model_name = 'NASNETALARGE'
     model_pretrained = True
     # batch_size = 16
-    # batch_size = 6
-    batch_size = 10
+    batch_size = 6
+    # batch_size = 10
 
     device = None
     opts, _ = getopt.getopt(sys.argv[1:], "d:", ["device="])
