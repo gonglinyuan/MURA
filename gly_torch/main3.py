@@ -10,8 +10,8 @@ import train
 
 
 def main():
-    # runTest()
-    run_train()
+    runTest("../../trained_models/20180504-014432/m-20180504-014432.pth.tar")
+    # run_train()
 
 
 def run_train():
