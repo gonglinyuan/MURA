@@ -47,7 +47,8 @@ def run_train():
         epoch_num=epoch_num,
         checkpoint=None,
         device=device,
-        transform_train=data_augmentation.augment_transform_slight_revised(img_size=354, crop_size=331, target_mean=0.5, target_std=0.5),
+        transform_train=data_augmentation.augment_transform_slight_revised(img_size=354, crop_size=331, target_mean=0.5,
+                                                                           target_std=0.5),
         transform_valid=data_augmentation.valid_transform(img_size=354, crop_size=331, target_mean=0.5, target_std=0.5),
         optimizer_fn=optimizers.adam_optimizers
     )
@@ -60,26 +61,37 @@ def run_train():
         model_pretrained=model_pretrained,
         batch_size=batch_size,
         device=device,
-        transform=data_augmentation.valid_transform()
+        transform=data_augmentation.valid_transform(img_size=354, crop_size=331, target_mean=0.5, target_std=0.5)
     )
 
 
-# def runTest():
-#     pathDirData = './database'
-#     pathFileTest = './dataset/test_1.txt'
-#     nnArchitecture = 'DENSE-NET-121'
-#     nnIsTrained = True
-#     nnClassCount = 14
-#     trBatchSize = 16
-#     imgtransResize = 256
-#     imgtransCrop = 224
-#
-#     pathModel = './models/m-25012018-123527.pth.tar'
-#
-#     timestampLaunch = ''
-#
-#     train.test(pathDirData, pathModel, nnArchitecture, nnClassCount, nnIsTrained, trBatchSize, imgtransResize,
-#                imgtransCrop, timestampLaunch)
+def runTest(path_model):
+    path_data_valid = '../../MURA_valid1_keras'
+    model_name = 'NASNETALARGE'
+    model_pretrained = True
+    # batch_size = 16
+    # batch_size = 6
+    batch_size = 10
+
+    device = None
+    opts, _ = getopt.getopt(sys.argv[1:], "d:", ["device="])
+    for opt, arg in opts:
+        if opt in ("-d", "--device") and torch.cuda.is_available():
+            device = torch.device("cuda:" + str(arg))
+    if device is None:
+        print("GPU not found! Using CPU!")
+        device = torch.device("cpu")
+
+    print('Testing the trained model')
+    train.test(
+        path_data=path_data_valid,
+        path_model=path_model,
+        model_name=model_name,
+        model_pretrained=model_pretrained,
+        batch_size=batch_size,
+        device=device,
+        transform=data_augmentation.valid_transform(img_size=354, crop_size=331, target_mean=0.5, target_std=0.5)
+    )
 
 
 # --------------------------------------------------------------------------------
