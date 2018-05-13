@@ -44,19 +44,49 @@ def train(*, path_data_train, path_data_valid, path_log, path_model, model_name,
         loss, auroc = epoch_valid(model, data_loader_valid, device=device)
         timestamp_now = time.strftime("%Y%m%d") + '-' + time.strftime("%H%M%S")
         scheduler.step(loss)
+        writer.add_scalar(tag="valid-loss", scalar_value=loss, global_step=epoch + 1)
+        writer.add_scalar(tag="valid-auroc", scalar_value=auroc, global_step=epoch + 1)
+        save_flag, save_flag_l, save_flag_a = '----', '-', '-'
         if loss < loss_min:
+            save_flag, save_flag_l = 'save', 'L'
             loss_min = loss
-            torch.save({'epoch': epoch + 1, 'state_dict': model.state_dict(), 'best_loss': loss_min,
-                        'optimizer': optimizer.state_dict()}, path_model)
-            print('Epoch [' + str(epoch + 1) + '] [save] [' + timestamp_now + '] train-loss= ' + str(
-                train_loss) + '  valid-loss= ' + str(loss) + '  auroc= ' + str(auroc))
-            writer.add_scalar(tag="valid-loss", scalar_value=loss, global_step=epoch + 1)
-            writer.add_scalar(tag="valid-auroc", scalar_value=auroc, global_step=epoch + 1)
-        else:
-            print('Epoch [' + str(epoch + 1) + '] [----] [' + timestamp_now + '] train-loss= ' + str(
-                train_loss) + '  valid-loss= ' + str(loss) + '  auroc= ' + str(auroc))
-            writer.add_scalar(tag="valid-loss", scalar_value=loss, global_step=epoch + 1)
-            writer.add_scalar(tag="valid-auroc", scalar_value=auroc, global_step=epoch + 1)
+            torch.save({
+                'epoch': epoch + 1,
+                'state_dict': model.state_dict(),
+                'best_loss': loss_min,
+                'optimizer': optimizer.state_dict()
+            }, path_model + "-L.pth.tar")
+        if auroc > auroc_max:
+            save_flag, save_flag_a = 'save', 'A'
+            auroc_max = auroc
+            torch.save({
+                'epoch': epoch + 1,
+                'state_dict': model.state_dict(),
+                'best_loss': loss_min,
+                'optimizer': optimizer.state_dict()
+            }, path_model + "-A.pth.tar")
+        print('Epoch [{0}] [{1}] [{2}] train-loss={3}  valid-loss={4}  auroc={5}'.format(
+            epoch + 1,
+            save_flag + save_flag_l + save_flag_a,
+            timestamp_now,
+            train_loss,
+            loss,
+            auroc
+        ))
+
+        # if loss < loss_min:
+        #     loss_min = loss
+        #     torch.save({'epoch': epoch + 1, 'state_dict': model.state_dict(), 'best_loss': loss_min,
+        #                 'optimizer': optimizer.state_dict()}, path_model)
+        #     print('Epoch [' + str(epoch + 1) + '] [save] [' + timestamp_now + '] train-loss= ' + str(
+        #         train_loss) + '  valid-loss= ' + str(loss) + '  auroc= ' + str(auroc))
+        #     writer.add_scalar(tag="valid-loss", scalar_value=loss, global_step=epoch + 1)
+        #     writer.add_scalar(tag="valid-auroc", scalar_value=auroc, global_step=epoch + 1)
+        # else:
+        #     print('Epoch [' + str(epoch + 1) + '] [----] [' + timestamp_now + '] train-loss= ' + str(
+        #         train_loss) + '  valid-loss= ' + str(loss) + '  auroc= ' + str(auroc))
+        #     writer.add_scalar(tag="valid-loss", scalar_value=loss, global_step=epoch + 1)
+        #     writer.add_scalar(tag="valid-auroc", scalar_value=auroc, global_step=epoch + 1)
     writer.close()
 
 
@@ -97,14 +127,14 @@ def epoch_valid(model, data_loader, device):
 def compute_auroc(true, score):
     true = true.cpu().numpy()
     score = score.cpu().numpy()
-    #roc_auc_score(true, score)
+    # roc_auc_score(true, score)
     return roc_auc_score(true, score)
 
 
 def test(*, path_data, path_model, model_name, model_pretrained, batch_size, device, transform):
     cudnn.benchmark = True
     model = ConvnetModel(model_name, class_count=1, is_trained=model_pretrained).to(device)
-    model_checkpoint = torch.load(path_model)
+    model_checkpoint = torch.load(path_model + ".pth.tar")
     model.load_state_dict(model_checkpoint['state_dict'])
     data_loader_test = DataLoader(
         ImageFolder(path_data, transform=transform),

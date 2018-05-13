@@ -165,6 +165,19 @@ def default_transform_no_bg(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SI
     ])
 
 
+def augment_transform_slight_no_bg(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE, target_mean=0.0,
+                                   target_std=1.0):
+    normalize = get_normalize(target_mean, target_std)
+    return transforms.Compose([
+        transforms.Lambda(remove_background),
+        transforms.RandomAffine(degrees=20, shear=10),
+        transforms.RandomResizedCrop(crop_size),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+        normalize
+    ])
+
+
 def valid_transform_no_bg(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE, target_mean=0.0, target_std=1.0):
     normalize = get_normalize(target_mean, target_std)
     return transforms.Compose([

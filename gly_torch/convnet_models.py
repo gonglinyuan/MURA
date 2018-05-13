@@ -55,7 +55,8 @@ class ConvnetModel(nn.Module):
             kernel_count = self.convnet.classifier[0].in_features
         elif model_name.startswith('RESNET'):
             kernel_count = self.convnet.fc.in_features
-        elif model_name.startswith('NASNET') or model_name.startswith('SE') or model_name.startswith('INCEPTION') or model_name.startswith('RESNEXT'):
+        elif model_name.startswith('NASNET') or model_name.startswith('SE') or model_name.startswith(
+                'INCEPTION') or model_name.startswith('RESNEXT'):
             kernel_count = self.convnet.last_linear.in_features
         else:
             print('ERROR')
@@ -63,7 +64,8 @@ class ConvnetModel(nn.Module):
         # add last layer
         if model_name.startswith('RESNET'):
             self.convnet.fc = nn.Linear(kernel_count, class_count)
-        elif model_name.startswith('NASNET') or model_name.startswith('SE') or model_name.startswith('INCEPTION') or model_name.startswith('RESNEXT'):
+        elif model_name.startswith('NASNET') or model_name.startswith('SE') or model_name.startswith(
+                'INCEPTION') or model_name.startswith('RESNEXT'):
             self.convnet.last_linear = nn.Linear(kernel_count, class_count)
         elif model_name.startswith('DUAL'):
             self.convnet.classifier = nn.Conv2d(kernel_count, class_count, kernel_size=1, bias=True)
