@@ -195,3 +195,81 @@ def valid_transform_no_bg(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE
         transforms.Lambda(lambda crops: torch.stack([transforms.ToTensor()(crop) for crop in crops])),
         transforms.Lambda(lambda crops: torch.stack([normalize(crop) for crop in crops]))
     ])
+
+
+def default_transform_revised_no_bg(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE, target_mean=0.0,
+                                    target_std=1.0):
+    normalize = get_normalize_no_bg(target_mean, target_std)
+    return transforms.Compose([
+        transforms.Lambda(remove_background),
+        transforms.Resize(img_size),
+        transforms.RandomCrop(crop_size),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+        normalize
+    ])
+
+
+def augment_transform_slight_revised_no_bg(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE, target_mean=0.0,
+                                           target_std=1.0):
+    normalize = get_normalize_no_bg(target_mean, target_std)
+    return transforms.Compose([
+        transforms.Lambda(remove_background),
+        transforms.RandomAffine(degrees=20, shear=10),
+        transforms.Resize(img_size),
+        transforms.RandomCrop(crop_size),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+        normalize
+    ])
+
+
+class DataTransform:
+    def __init__(self, *, revised=False, aug=None, no_bg=False):
+        self.revised = revised
+        self.aug = aug.lower()
+        self.no_bg = no_bg
+
+    def get_train(self, img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE, target_mean=0.0, target_std=1.0):
+        trans_list = []
+        if self.no_bg:
+            normalize = get_normalize_no_bg(target_mean, target_std)
+            trans_list.append(transforms.Lambda(remove_background))
+        else:
+            normalize = get_normalize(target_mean, target_std)
+        if self.aug == "slight":
+            trans_list.append(transforms.RandomAffine(degrees=20, shear=10))
+        if self.revised:
+            trans_list.append(transforms.Resize(img_size))
+            trans_list.append(transforms.RandomCrop(crop_size))
+        else:
+            trans_list.append(transforms.RandomResizedCrop(crop_size))
+        trans_list.append(transforms.RandomHorizontalFlip())
+        trans_list.append(transforms.ToTensor())
+        trans_list.append(normalize)
+        return transforms.Compose(trans_list)
+
+    def get_valid(self, img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE, target_mean=0.0, target_std=1.0):
+        trans_list = []
+        if self.no_bg:
+            normalize = get_normalize_no_bg(target_mean, target_std)
+            trans_list.append(transforms.Lambda(remove_background))
+        else:
+            normalize = get_normalize(target_mean, target_std)
+        trans_list.append(transforms.Resize(img_size))
+        trans_list.append(transforms.TenCrop(crop_size))
+        trans_list.append(transforms.Lambda(lambda crops: torch.stack([transforms.ToTensor()(crop) for crop in crops])))
+        trans_list.append(transforms.Lambda(lambda crops: torch.stack([normalize(crop) for crop in crops])))
+        return transforms.Compose(trans_list)
+
+    def __str__(self):
+        s = ""
+        if self.aug:
+            s += "aug" + self.aug
+        if self.revised:
+            s += "revised"
+        if self.no_bg:
+            s += "nobg"
+        if s != "":
+            s = "-" + s
+        return s
