@@ -133,26 +133,14 @@ def remove_background(img):
                    .filter(ImageFilter.MedianFilter(size=3))
                    .filter(ImageFilter.MaxFilter(size=3)))
     u, d, l, r = 0, arr.shape[0], 0, arr.shape[1]
-    for i in range(arr.shape[0]):
-        if np.max(arr[i, :]) == 0:
-            u = i + 1
-        else:
-            break
-    for i in reversed(range(arr.shape[0])):
-        if np.max(arr[i, :]) == 0:
-            d = i
-        else:
-            break
-    for j in range(arr.shape[1]):
-        if np.max(arr[:, j]) == 0:
-            l = j + 1
-        else:
-            break
-    for j in reversed(range(arr.shape[1])):
-        if np.max(arr[:, j]) == 0:
-            r = j
-        else:
-            break
+    while u + 1 < d and np.max(arr[u, :]) == 0:
+        u += 1
+    while u + 1 < d and np.max(arr[d - 1, :]) == 0:
+        d -= 1
+    while l + 1 < r and np.max(arr[:, l]) == 0:
+        l += 1
+    while l + 1 < r and np.max(arr[:, r - 1]) == 0:
+        r -= 1
     return img.crop([l, u, r, d])
 
 
