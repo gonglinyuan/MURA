@@ -5,6 +5,8 @@ from PIL import ImageFilter
 
 DATA_MEAN = 0.20558404267255
 DATA_STD = 0.17694948680626902473216631207703
+DATA_MEAN_NO_BG = 0.2536153043662579
+DATA_STD_NO_BG = 0.168205972008607
 DEFAULT_IMG_SIZE = 256
 DEFAULT_CROP_SIZE = 224
 DEFAULT_NORMALIZE = transforms.Normalize([DATA_MEAN, DATA_MEAN, DATA_MEAN], [DATA_STD, DATA_STD, DATA_STD])
@@ -154,8 +156,14 @@ def remove_background(img):
     return img.crop([l, u, r, d])
 
 
+def get_normalize_no_bg(target_mean, target_std):
+    means, stds = DATA_MEAN_NO_BG * np.ones(3), DATA_STD_NO_BG * np.ones(3)
+    miu, sigma = means - target_mean * stds / target_std, stds / target_std
+    return transforms.Normalize(miu.tolist(), sigma.tolist())
+
+
 def default_transform_no_bg(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE, target_mean=0.0, target_std=1.0):
-    normalize = get_normalize(target_mean, target_std)
+    normalize = get_normalize_no_bg(target_mean, target_std)
     return transforms.Compose([
         transforms.Lambda(remove_background),
         transforms.RandomResizedCrop(crop_size),
@@ -167,7 +175,7 @@ def default_transform_no_bg(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SI
 
 def augment_transform_slight_no_bg(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE, target_mean=0.0,
                                    target_std=1.0):
-    normalize = get_normalize(target_mean, target_std)
+    normalize = get_normalize_no_bg(target_mean, target_std)
     return transforms.Compose([
         transforms.Lambda(remove_background),
         transforms.RandomAffine(degrees=20, shear=10),
@@ -179,7 +187,7 @@ def augment_transform_slight_no_bg(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_
 
 
 def valid_transform_no_bg(img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE, target_mean=0.0, target_std=1.0):
-    normalize = get_normalize(target_mean, target_std)
+    normalize = get_normalize_no_bg(target_mean, target_std)
     return transforms.Compose([
         transforms.Lambda(remove_background),
         transforms.Resize(img_size),
