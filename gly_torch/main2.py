@@ -26,11 +26,11 @@ def run_train():
     epoch_num = 100
     img_size = 256
     crop_size = 224
-    target_mean = 0.449
-    target_std = 0.226
+    target_mean = 0.0
+    target_std = 1.0
     path_model = '../../trained_models/' + timestamp + '/m-' + timestamp
 
-    data_transform = DataTransform(revised=False, aug="slight", no_bg=True)
+    data_transform = DataTransform(revised=True, aug="slight", no_bg=True, pad=False, to_rgb=True)
     data_transform_train = data_transform.get_train(img_size=img_size, crop_size=crop_size, target_mean=target_mean,
                                                     target_std=target_std)
     data_transform_valid = data_transform.get_valid(img_size=img_size, crop_size=crop_size, target_mean=target_mean,
@@ -61,6 +61,8 @@ def run_train():
         transform_valid=data_transform_valid,
         optimizer_fn=optimizers.adam_optimizers
     )
+
+    print("using data transforms: " + str(data_transform))
 
     print('Testing the model with best valid-loss')
     print('timestamp = ' + timestamp)

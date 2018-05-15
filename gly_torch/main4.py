@@ -16,7 +16,7 @@ def main():
 
 def run_train():
     timestamp = time.strftime("%Y%m%d") + '-' + time.strftime("%H%M%S")
-    model_name = 'DENSENET201'
+    model_name = 'VGG19-BN'
     model_pretrained = True
     path_data_train = '../../MURA_trainval_keras'
     path_data_valid = '../../MURA_valid1_keras'
@@ -26,8 +26,8 @@ def run_train():
     epoch_num = 100
     img_size = 256
     crop_size = 224
-    target_mean = 0.449
-    target_std = 0.226
+    target_mean = 0.0
+    target_std = 1.0
     path_model = '../../trained_models/' + timestamp + '/m-' + timestamp
 
     data_transform = DataTransform(revised=True, aug="slight", no_bg=True)
@@ -61,6 +61,8 @@ def run_train():
         transform_valid=data_transform_valid,
         optimizer_fn=optimizers.adam_optimizers
     )
+
+    print("using data transforms: " + str(data_transform))
 
     print('Testing the model with best valid-loss')
     print('timestamp = ' + timestamp)
