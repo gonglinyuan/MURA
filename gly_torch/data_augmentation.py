@@ -227,7 +227,10 @@ def get_normalize_no_bg(target_mean, target_std):
 class DataTransform:
     def __init__(self, *, revised=False, aug=None, no_bg=False, pad=False, to_rgb=False):
         self.revised = revised
-        self.aug = aug.lower()
+        if aug:
+            self.aug = aug.lower()
+        else:
+            self.aug = None
         self.no_bg = no_bg
         self.pad = pad
         self.to_rgb = to_rgb
