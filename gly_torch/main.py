@@ -30,7 +30,7 @@ def run_train():
     target_std = 1.0
     path_model = '../../trained_models/' + timestamp + '/m-' + timestamp
 
-    data_transform = DataTransform(revised=False, aug="slight", no_bg=True, pad=True, to_rgb=False)
+    data_transform = DataTransform(revised=False, no_bg=True, pad=True, to_rgb=False)
     data_transform_train = data_transform.get_train(img_size=img_size, crop_size=crop_size, target_mean=target_mean,
                                                     target_std=target_std)
     data_transform_valid = data_transform.get_valid(img_size=img_size, crop_size=crop_size, target_mean=target_mean,

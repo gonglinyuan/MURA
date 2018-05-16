@@ -16,7 +16,7 @@ def main():
 
 def run_train():
     timestamp = time.strftime("%Y%m%d") + '-' + time.strftime("%H%M%S")
-    model_name = 'DENSENET201'
+    model_name = 'VGG16-BN'
     model_pretrained = True
     path_data_train = '../../MURA_trainval_keras'
     path_data_valid = '../../MURA_valid1_keras'
@@ -30,7 +30,7 @@ def run_train():
     target_std = 1.0
     path_model = '../../trained_models/' + timestamp + '/m-' + timestamp
 
-    data_transform = DataTransform(revised=False, aug="slight", no_bg=False, to_rgb=True)
+    data_transform = DataTransform(revised=False, aug="slight", no_bg=True, pad=True, to_rgb=False)
     data_transform_train = data_transform.get_train(img_size=img_size, crop_size=crop_size, target_mean=target_mean,
                                                     target_std=target_std)
     data_transform_valid = data_transform.get_valid(img_size=img_size, crop_size=crop_size, target_mean=target_mean,
