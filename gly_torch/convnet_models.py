@@ -38,8 +38,10 @@ class ConvnetModel(nn.Module):
         # load model and weights
         if model_name.startswith('NASNET') or model_name == 'INCEPTIONRESNETV2' or model_name == 'INCEPTIONV4':
             self.convnet = MODELS[model_name](pretrained='imagenet+background')
-        elif model_name.startswith('SE') or model_name.startswith('RESNEXT') or model_name == 'INCEPTIONV3':
+        elif model_name.startswith('SE') or model_name.startswith('RESNEXT'):
             self.convnet = MODELS[model_name](pretrained='imagenet')
+        elif model_name == 'INCEPTIONV3':
+            self.convnet = MODELS[model_name](pretrained='imagenet', aux_logits=False)
         elif model_name.startswith('DUAL'):
             if model_name.endswith('5k'):
                 self.convnet = MODELS[model_name](pretrained='imagenet+5k')
