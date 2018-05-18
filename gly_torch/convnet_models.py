@@ -41,7 +41,7 @@ class ConvnetModel(nn.Module):
         elif model_name.startswith('SE') or model_name.startswith('RESNEXT'):
             self.convnet = MODELS[model_name](pretrained='imagenet')
         elif model_name == 'INCEPTIONV3':
-            self.convnet = MODELS[model_name](pretrained='imagenet', aux_logits=False)
+            self.convnet = MODELS[model_name](pretrained='imagenet', transform_input=False, aux_logits=False)
         elif model_name.startswith('DUAL'):
             if model_name.endswith('5k'):
                 self.convnet = MODELS[model_name](pretrained='imagenet+5k')
