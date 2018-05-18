@@ -1,7 +1,6 @@
-import pretrainedmodels
+import pretrainedmodels.utils
 import torch.nn as nn
 import torchvision
-import pretrainedmodels.utils
 
 MODELS = {
     'DENSENET121': torchvision.models.densenet121,
@@ -26,6 +25,8 @@ MODELS = {
     'DUALPATHNET92_5k': pretrainedmodels.models.dpn92,
     'DUALPATHNET98': pretrainedmodels.models.dpn98,
     'INCEPTIONRESNETV2': pretrainedmodels.models.inceptionresnetv2,
+    'INCEPTIONV4': pretrainedmodels.models.inceptionv4,
+    'INCEPTIONV3': torchvision.models.inception_v3,
     'RESNEXT101_64x4d': pretrainedmodels.models.resnext101_64x4d,
     'RESNEXT101_32x4d': pretrainedmodels.models.resnext101_32x4d
 }
@@ -35,9 +36,9 @@ class ConvnetModel(nn.Module):
     def __init__(self, model_name, *, class_count, is_trained):
         super(ConvnetModel, self).__init__()
         # load model and weights
-        if model_name.startswith('NASNET') or model_name.startswith('INCEPTION'):
+        if model_name.startswith('NASNET') or model_name == 'INCEPTIONRESNETV2' or model_name == 'INCEPTIONV4':
             self.convnet = MODELS[model_name](pretrained='imagenet+background')
-        elif model_name.startswith('SE') or model_name.startswith('RESNEXT'):
+        elif model_name.startswith('SE') or model_name.startswith('RESNEXT') or model_name == 'INCEPTIONV3':
             self.convnet = MODELS[model_name](pretrained='imagenet')
         elif model_name.startswith('DUAL'):
             if model_name.endswith('5k'):
@@ -53,19 +54,19 @@ class ConvnetModel(nn.Module):
             kernel_count = self.convnet.classifier.in_channels
         elif model_name.startswith('VGG'):
             kernel_count = self.convnet.classifier[0].in_features
-        elif model_name.startswith('RESNET'):
+        elif model_name.startswith('RESNET') or model_name == 'INCEPTIONV3':
             kernel_count = self.convnet.fc.in_features
-        elif model_name.startswith('NASNET') or model_name.startswith('SE') or model_name.startswith(
-                'INCEPTION') or model_name.startswith('RESNEXT'):
+        elif (model_name.startswith('NASNET') or model_name.startswith('SE') or model_name == 'INCEPTIONRESNETV2'
+              or model_name == 'INCEPTIONV4' or model_name.startswith('RESNEXT')):
             kernel_count = self.convnet.last_linear.in_features
         else:
             print('ERROR')
             kernel_count = None
         # add last layer
-        if model_name.startswith('RESNET'):
+        if model_name.startswith('RESNET') or model_name == 'INCEPTIONV3':
             self.convnet.fc = nn.Linear(kernel_count, class_count)
-        elif model_name.startswith('NASNET') or model_name.startswith('SE') or model_name.startswith(
-                'INCEPTION') or model_name.startswith('RESNEXT'):
+        elif (model_name.startswith('NASNET') or model_name.startswith('SE') or model_name == 'INCEPTIONRESNETV2'
+              or model_name == 'INCEPTIONV4' or model_name.startswith('RESNEXT')):
             self.convnet.last_linear = nn.Linear(kernel_count, class_count)
         elif model_name.startswith('DUAL'):
             self.convnet.classifier = nn.Conv2d(kernel_count, class_count, kernel_size=1, bias=True)
