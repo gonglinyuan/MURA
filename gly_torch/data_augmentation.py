@@ -248,6 +248,9 @@ class DataTransform:
             normalize = get_normalize(target_mean, target_std)
         if self.aug == "slight":
             trans_list.append(transforms.RandomAffine(degrees=20, shear=10))
+        elif self.aug == "modified":
+            trans_list.append(transforms.RandomAffine(degrees=15, shear=10))
+            trans_list.append(transforms.ColorJitter(brightness=0.05, contrast=0.05, saturation=0.05))
         if self.revised:
             trans_list.append(transforms.Resize(img_size))
             trans_list.append(transforms.RandomCrop(crop_size))
