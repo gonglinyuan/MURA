@@ -30,7 +30,8 @@ MODELS = {
     'XCEPTION': pretrainedmodels.models.xception,
     'RESNEXT101_64x4d': pretrainedmodels.models.resnext101_64x4d,
     'RESNEXT101_32x4d': pretrainedmodels.models.resnext101_32x4d,
-    'VGG19-BN-LARGE': torchvision.models.vgg19_bn
+    'VGG19-BN-LARGE': torchvision.models.vgg19_bn,
+    'VGG16-BN-LARGE': torchvision.models.vgg16_bn
 }
 
 
@@ -57,7 +58,7 @@ class ConvnetModel(nn.Module):
         elif model_name.startswith('DUAL'):
             kernel_count = self.convnet.classifier.in_channels
         elif model_name.startswith('VGG'):
-            if model_name == 'VGG19-BN-LARGE':
+            if model_name.endswith('LARGE'):
                 kernel_count = 512 * 8 * 8
             else:
                 kernel_count = self.convnet.classifier[0].in_features
