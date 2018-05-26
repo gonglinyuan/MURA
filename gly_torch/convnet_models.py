@@ -1,5 +1,8 @@
+import types
+
 import pretrainedmodels.utils
 import torch.nn as nn
+import torch.nn.functional as F
 import torchvision
 
 MODELS = {
@@ -31,7 +34,11 @@ MODELS = {
     'RESNEXT101_64x4d': pretrainedmodels.models.resnext101_64x4d,
     'RESNEXT101_32x4d': pretrainedmodels.models.resnext101_32x4d,
     'VGG19-BN-LARGE': torchvision.models.vgg19_bn,
-    'VGG16-BN-LARGE': torchvision.models.vgg16_bn
+    'VGG16-BN-LARGE': torchvision.models.vgg16_bn,
+    'DENSENET121-LARGE': torchvision.models.densenet121,
+    'DENSENET161-LARGE': torchvision.models.densenet161,
+    'DENSENET169-LARGE': torchvision.models.densenet169,
+    'DENSENET201-LARGE': torchvision.models.densenet201,
 }
 
 
@@ -78,6 +85,17 @@ class ConvnetModel(nn.Module):
             self.convnet.last_linear = nn.Linear(kernel_count, class_count)
         elif model_name.startswith('DUAL'):
             self.convnet.classifier = nn.Conv2d(kernel_count, class_count, kernel_size=1, bias=True)
+        elif model_name.startswith('DENSENET') and model_name.endswith('LARGE'):
+            self.convnet.classifier = nn.Linear(kernel_count, class_count)
+
+            def forward(self, x):
+                features = self.features(x)
+                out = F.relu(features, inplace=True)
+                out = F.avg_pool2d(out, kernel_size=8, stride=1).view(features.size(0), -1)
+                out = self.classifier(out)
+                return out
+
+            self.convnet.forward = types.MethodType(forward, self.convnet)
         else:
             self.convnet.classifier = nn.Linear(kernel_count, class_count)
 
