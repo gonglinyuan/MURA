@@ -251,6 +251,8 @@ class DataTransform:
         elif self.aug == "modified":
             trans_list.append(transforms.RandomAffine(degrees=15, shear=10))
             trans_list.append(transforms.ColorJitter(brightness=0.05, contrast=0.05, saturation=0.05))
+        elif self.aug == "rot30":
+            trans_list.append(transforms.RandomRotation(degrees=30))
         if self.revised:
             trans_list.append(transforms.Resize(img_size))
             trans_list.append(transforms.RandomCrop(crop_size))
