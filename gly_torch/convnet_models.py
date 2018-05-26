@@ -39,6 +39,10 @@ MODELS = {
     'DENSENET161-LARGE': torchvision.models.densenet161,
     'DENSENET169-LARGE': torchvision.models.densenet169,
     'DENSENET201-LARGE': torchvision.models.densenet201,
+    'DENSENET121-LARGE2': torchvision.models.densenet121,
+    'DENSENET161-LARGE2': torchvision.models.densenet161,
+    'DENSENET169-LARGE2': torchvision.models.densenet169,
+    'DENSENET201-LARGE2': torchvision.models.densenet201
 }
 
 
@@ -92,6 +96,17 @@ class ConvnetModel(nn.Module):
                 features = self.features(x)
                 out = F.relu(features, inplace=True)
                 out = F.avg_pool2d(out, kernel_size=8, stride=1).view(features.size(0), -1)
+                out = self.classifier(out)
+                return out
+
+            self.convnet.forward = types.MethodType(forward, self.convnet)
+        elif model_name.startswith('DENSENET') and model_name.endswith('LARGE2'):
+            self.convnet.classifier = nn.Linear(kernel_count, class_count)
+
+            def forward(self, x):
+                features = self.features(x)
+                out = F.relu(features, inplace=True)
+                out = F.avg_pool2d(out, kernel_size=9, stride=1).view(features.size(0), -1)
                 out = self.classifier(out)
                 return out
 
