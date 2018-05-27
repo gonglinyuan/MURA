@@ -115,7 +115,7 @@ class ConvnetModel(nn.Module):
                 return out
 
             self.convnet.forward = types.MethodType(forward, self.convnet)
-        elif model_name.startswith('DENSENET') and model_name.endswith('LARGE2'):
+        elif model_name.startswith('DENSENET') and model_name.endswith('LARGE3'):
             self.convnet.classifier = nn.Linear(kernel_count, class_count)
 
             def forward(self, x):
