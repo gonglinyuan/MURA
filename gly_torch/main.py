@@ -16,7 +16,7 @@ def main():
 
 def run_train():
     timestamp = time.strftime("%Y%m%d") + '-' + time.strftime("%H%M%S")
-    model_name = 'DENSENET161-LARGE2'
+    model_name = 'DENSENET201-LARGE3'
     model_pretrained = True
     path_data_train = '../../MURA_trainval_keras'
     path_data_valid = '../../MURA_valid1_keras'
@@ -24,8 +24,8 @@ def run_train():
     # batch_size = 16
     batch_size = 16
     epoch_num = 100
-    img_size = 330
-    crop_size = 288
+    img_size = 366
+    crop_size = 320
     target_mean = 0.456
     target_std = 0.225
     path_model = '../../trained_models/' + timestamp + '/m-' + timestamp
