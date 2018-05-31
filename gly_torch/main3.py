@@ -10,8 +10,8 @@ from data_augmentation import DataTransform
 
 
 def main():
-    # runTest("../../trained_models/20180515-212008/m-20180515-212008")
-    run_train()
+    run_test("../../trained_models/20180529-230402/m-20180529-230402")
+    # run_train()
 
 
 def run_train():
@@ -91,16 +91,16 @@ def run_train():
 
 
 def run_test(path_model):
-    model_name = 'DENSENET201'
+    model_name = 'VGG19-BN-LARGE'
     model_pretrained = True
     path_data_valid = '../../MURA_valid1_keras'
     batch_size = 16
-    img_size = 256
-    crop_size = 224
-    target_mean = 0.0
-    target_std = 1.0
+    img_size = 293
+    crop_size = 256
+    target_mean = 0.456
+    target_std = 0.225
 
-    data_transform = DataTransform(revised=False, no_bg=True, pad=True, to_rgb=False)
+    data_transform = DataTransform(aug="rot30", no_bg=True, pad=True)
     data_transform_valid = data_transform.get_valid(img_size=img_size, crop_size=crop_size, target_mean=target_mean,
                                                     target_std=target_std)
 
