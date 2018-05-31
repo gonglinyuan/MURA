@@ -16,7 +16,7 @@ def main():
 
 def run_train():
     timestamp = time.strftime("%Y%m%d") + '-' + time.strftime("%H%M%S")
-    model_name = 'VGG19-BN-LARGE'
+    model_name = 'INCEPTIONRESNETV2'
     model_pretrained = True
     path_data_train = '../../MURA_trainval_keras'
     path_data_valid = '../../MURA_valid1_keras'
@@ -24,10 +24,10 @@ def run_train():
     # batch_size = 16
     batch_size = 16
     epoch_num = 100
-    img_size = 293
-    crop_size = 256
-    target_mean = 0.456
-    target_std = 0.225
+    img_size = 341
+    crop_size = 299
+    target_mean = 0.5
+    target_std = 0.5
     path_model = '../../trained_models/' + timestamp + '/m-' + timestamp
 
     data_transform = DataTransform(aug="rot30", no_bg=True, pad=True)
