@@ -16,7 +16,7 @@ def main():
 
 def run_train():
     timestamp = time.strftime("%Y%m%d") + '-' + time.strftime("%H%M%S")
-    model_name = 'INCEPTIONV4'
+    model_name = 'INCEPTIONV4-LARGE'
     model_pretrained = True
     path_data_train = '../../MURA_trainval_keras'
     path_data_valid = '../../MURA_valid1_keras'
@@ -24,8 +24,8 @@ def run_train():
     # batch_size = 16
     batch_size = 16
     epoch_num = 100
-    img_size = 341
-    crop_size = 299
+    img_size = 378
+    crop_size = 331
     target_mean = 0.5
     target_std = 0.5
     path_model = '../../trained_models/' + timestamp + '/m-' + timestamp

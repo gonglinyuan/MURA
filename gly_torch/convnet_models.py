@@ -46,7 +46,8 @@ MODELS = {
     'DENSENET121-LARGE3': torchvision.models.densenet121,
     'DENSENET161-LARGE3': torchvision.models.densenet161,
     'DENSENET169-LARGE3': torchvision.models.densenet169,
-    'DENSENET201-LARGE3': torchvision.models.densenet201
+    'DENSENET201-LARGE3': torchvision.models.densenet201,
+    'INCEPTIONV4-LARGE': pretrainedmodels.models.inceptionv4,
 }
 
 
@@ -54,7 +55,7 @@ class ConvnetModel(nn.Module):
     def __init__(self, model_name, *, class_count, is_trained):
         super(ConvnetModel, self).__init__()
         # load model and weights
-        if model_name.startswith('NASNET') or model_name == 'INCEPTIONRESNETV2' or model_name == 'INCEPTIONV4':
+        if model_name.startswith('NASNET') or model_name == 'INCEPTIONRESNETV2' or model_name.startswith('INCEPTIONV4'):
             self.convnet = MODELS[model_name](pretrained='imagenet+background')
         elif model_name.startswith('SE') or model_name.startswith('RESNEXT') or model_name == 'XCEPTION':
             self.convnet = MODELS[model_name](pretrained='imagenet')
@@ -80,7 +81,7 @@ class ConvnetModel(nn.Module):
         elif model_name.startswith('RESNET') or model_name == 'INCEPTIONV3':
             kernel_count = self.convnet.fc.in_features
         elif (model_name.startswith('NASNET') or model_name.startswith('SE') or model_name == 'INCEPTIONRESNETV2'
-              or model_name == 'INCEPTIONV4' or model_name.startswith('RESNEXT') or model_name == 'XCEPTION'):
+              or model_name.startswith('INCEPTIONV4') or model_name.startswith('RESNEXT') or model_name == 'XCEPTION'):
             kernel_count = self.convnet.last_linear.in_features
         else:
             print('ERROR')
@@ -126,6 +127,9 @@ class ConvnetModel(nn.Module):
                 return out
 
             self.convnet.forward = types.MethodType(forward, self.convnet)
+        elif model_name.startswith('INCEPTIONV4') and model_name.endswith('LARGE'):
+            self.convnet.avg_pool = nn.AvgPool2d(9, count_include_pad=False)
+            self.convnet.last_linear = nn.Linear(kernel_count, class_count)
         else:
             self.convnet.classifier = nn.Linear(kernel_count, class_count)
 
