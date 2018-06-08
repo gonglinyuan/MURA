@@ -47,7 +47,7 @@ MODELS = {
     'DENSENET161-LARGE3': torchvision.models.densenet161,
     'DENSENET169-LARGE3': torchvision.models.densenet169,
     'DENSENET201-LARGE3': torchvision.models.densenet201,
-    'INCEPTIONV4-LARGE': pretrainedmodels.models.inceptionv4,
+    'INCEPTIONV4-LARGE': pretrainedmodels.models.inceptionv4
 }
 
 
