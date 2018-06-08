@@ -8,7 +8,7 @@ from data_augmentation import DataTransform
 
 
 def main():
-    run_test("models/m-04051-09053", sys.argv[1], sys.argv[2])
+    run_test("src/models/m-04051-09053", sys.argv[1], sys.argv[2])
 
 
 def run_test(path_model, path_csv, path_output):
