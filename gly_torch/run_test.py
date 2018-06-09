@@ -24,7 +24,7 @@ def run_test(path_model, path_csv, path_output):
     data_transform_valid = data_transform.get_valid(img_size=img_size, crop_size=crop_size, target_mean=target_mean,
                                                     target_std=target_std)
 
-    device = torch.device("cpu")
+    device = torch.device("cuda:0")
 
     output_lst = predict.predict(
         path_csv=path_csv,

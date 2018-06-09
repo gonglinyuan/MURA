@@ -9,11 +9,11 @@ CPU = torch.device("cpu")
 
 def predict(*, path_csv, path_model, model_name, model_pretrained, batch_size, device, transform):
     model = ConvnetModel(model_name, class_count=1, is_trained=model_pretrained).to(device)
-    model_checkpoint = torch.load(path_model + ".pth.tar", map_location="cpu")
+    model_checkpoint = torch.load(path_model + ".pth.tar")
     model.load_state_dict(model_checkpoint['state_dict'])
     data_loader_test = DataLoader(
         TestData(path_csv, transform=transform),
-        batch_size=batch_size, shuffle=False, num_workers=10)
+        batch_size=batch_size, shuffle=False, num_workers=0)
     model.eval()
     study_y = {}
     for (x, study) in data_loader_test:
