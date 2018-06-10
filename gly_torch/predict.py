@@ -26,11 +26,11 @@ def predict(*, path_csv, path_model, model_name, model_pretrained, batch_size, d
         for i in range(bs):
             if study[i] in study_y:
                 study_y[study[i]][0] += 1
-                study_y[study[i]][1] += y[i]
+                study_y[study[i]][1] += y[i].item()
             else:
-                study_y[study[i]] = [1, y[i]]
+                study_y[study[i]] = [1, y[i].item()]
     lst = []
     # arithmetic average
-    for key, value in study_y.values():
+    for key, value in study_y.items():
         lst.append((key, value[1] / value[0]))
     return sorted(lst)
