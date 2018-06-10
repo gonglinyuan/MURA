@@ -21,8 +21,8 @@ def run_test(path_model, path_csv, path_output):
     target_std = 1.0
 
     data_transform = DataTransform(no_bg=True, pad=True)
-    data_transform_valid = data_transform.get_valid(img_size=img_size, crop_size=crop_size, target_mean=target_mean,
-                                                    target_std=target_std)
+    data_transform_valid = data_transform.get_test(img_size=img_size, crop_size=crop_size, target_mean=target_mean,
+                                                   target_std=target_std, positions=[5, 6, 4])
 
     device = torch.device("cuda:0")
 

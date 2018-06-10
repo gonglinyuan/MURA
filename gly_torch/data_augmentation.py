@@ -116,6 +116,25 @@ class DataTransform:
         trans_list.append(transforms.Lambda(lambda crops: torch.stack([normalize(crop) for crop in crops])))
         return transforms.Compose(trans_list)
 
+    def get_test(self, img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE, target_mean=0.0, target_std=1.0,
+                 positions=(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)):
+        trans_list = []
+        if self.to_rgb:
+            trans_list.append(transforms.Lambda(lambda img: img.convert("RGB")))
+        if self.no_bg:
+            normalize = get_normalize_no_bg(target_mean, target_std)
+            trans_list.append(transforms.Lambda(_remove_background))
+            if self.pad:
+                trans_list.append(transforms.Lambda(_pad))
+        else:
+            normalize = get_normalize(target_mean, target_std)
+        trans_list.append(transforms.Resize(img_size))
+        trans_list.append(transforms.TenCrop(crop_size))
+        trans_list.append(transforms.Lambda(lambda crops: torch.stack([transforms.ToTensor()(crop) for crop in crops])))
+        trans_list.append(transforms.Lambda(lambda crops: crops[positions]))
+        trans_list.append(transforms.Lambda(lambda crops: torch.stack([normalize(crop) for crop in crops])))
+        return transforms.Compose(trans_list)
+
     def __str__(self):
         s = ""
         if self.aug:

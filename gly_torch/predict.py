@@ -22,15 +22,15 @@ def predict(*, path_csv, path_model, model_name, model_pretrained, batch_size, d
         with torch.no_grad():
             y = torch.nn.Sigmoid()(model(x.view(-1, c, h, w)))
         y = y.to(CPU)
-        y = y.view(bs, n_crops).mean(1).view(-1)
+        y = y.view(bs, n_crops)
         for i in range(bs):
             if study[i] in study_y:
                 study_y[study[i]][0] += 1
-                study_y[study[i]][1] += y[i].item()
+                study_y[study[i]][1] += y[i,:]
             else:
-                study_y[study[i]] = [1, y[i].item()]
+                study_y[study[i]] = [1, y[i,:]]
     lst = []
     # arithmetic average
     for key, value in study_y.items():
-        lst.append((key, value[1] / value[0]))
+        lst.append([key] + (value[1] / value[0]).tolist())
     return sorted(lst)
