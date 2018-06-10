@@ -20,7 +20,7 @@ class TestData(torch.utils.data.Dataset):
         sample = self.loader(path)
         if self.transform is not None:
             sample = self.transform(sample)
-        return sample, path.split('/'.join(path.split('/')[:-1]))
+        return sample, '/'.join(path.split('/')[:-1])
 
     def __len__(self):
         return len(self.image_paths)
