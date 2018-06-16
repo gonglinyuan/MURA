@@ -14,7 +14,6 @@ def main():
 
 def run_test(path_model, path_csv, path_output):
     model_name = 'SENET154'
-    model_pretrained = True
     batch_size = 16
     img_size = 256
     crop_size = 224
@@ -31,7 +30,6 @@ def run_test(path_model, path_csv, path_output):
         path_csv=path_csv,
         path_model=path_model,
         model_name=model_name,
-        model_pretrained=model_pretrained,
         batch_size=batch_size,
         device=device,
         transform=data_transform_valid

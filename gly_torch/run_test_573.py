@@ -13,7 +13,6 @@ def main():
 
 def run_test(path_model, path_csv, path_output):
     model_name = 'DENSENET201-LARGE3'
-    model_pretrained = True
     batch_size = 16
     img_size = 366
     crop_size = 320
@@ -30,7 +29,6 @@ def run_test(path_model, path_csv, path_output):
         path_csv=path_csv,
         path_model=path_model,
         model_name=model_name,
-        model_pretrained=model_pretrained,
         batch_size=batch_size,
         device=device,
         transform=data_transform_valid

@@ -1,14 +1,14 @@
 import torch
 from torch.utils.data import DataLoader
 
-from convnet_models import ConvnetModel
+from convnet_models_final import ConvnetModel
 from test_data import TestData
 
 CPU = torch.device("cpu")
 
 
-def predict(*, path_csv, path_model, model_name, model_pretrained, batch_size, device, transform):
-    model = ConvnetModel(model_name, class_count=1, is_trained=model_pretrained).to(device)
+def predict(*, path_csv, path_model, model_name, batch_size, device, transform):
+    model = ConvnetModel(model_name).to(device)
     model_checkpoint = torch.load(path_model + ".pth.tar", map_location=lambda storage, loc: storage.cuda(0))
     model.load_state_dict(model_checkpoint['state_dict'])
     data_loader_test = DataLoader(
