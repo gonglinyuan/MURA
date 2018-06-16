@@ -94,6 +94,7 @@ def main():
     ]
     keys, results = [], []
     for config in configs:
+        print(config.model_name)
         keys, result = run_test(sys.argv[1], config)
         results.append(result)
     results = np.concatenate(results, axis=1)
