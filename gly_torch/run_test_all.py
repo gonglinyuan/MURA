@@ -23,7 +23,7 @@ def main():
         Config(
             model_name="DUALPATHNET107_5k",
             file_model="m-03916-09049",
-            batch_size=16,
+            batch_size=32,
             img_size=256,
             crop_size=224,
             target_mean=np.array([124 / 255, 117 / 255, 104 / 255]),
@@ -33,7 +33,7 @@ def main():
         ), Config(
             model_name="SENET154",
             file_model="m-03924-09074",
-            batch_size=16,
+            batch_size=34,
             img_size=256,
             crop_size=224,
             target_mean=np.array([0.485, 0.456, 0.406]),
@@ -43,7 +43,7 @@ def main():
         ), Config(
             model_name="INCEPTIONV4-LARGE",
             file_model="m-03879-09080",
-            batch_size=16,
+            batch_size=44,
             img_size=378,
             crop_size=331,
             target_mean=0.5,
@@ -53,7 +53,7 @@ def main():
         ), Config(
             model_name="VGG16-BN",
             file_model="m-04051-09053",
-            batch_size=16,
+            batch_size=55,
             img_size=256,
             crop_size=224,
             target_mean=0.0,
@@ -63,7 +63,7 @@ def main():
         ), Config(
             model_name="DENSENET201-LARGE3",
             file_model="m-04001-09065",
-            batch_size=16,
+            batch_size=57,
             img_size=366,
             crop_size=320,
             target_mean=0.456,
@@ -73,7 +73,7 @@ def main():
         ), Config(
             model_name="DENSENET161-LARGE3",
             file_model="m-03988-09084",
-            batch_size=16,
+            batch_size=42,
             img_size=366,
             crop_size=320,
             target_mean=0.456,
@@ -83,7 +83,7 @@ def main():
         ), Config(
             model_name="NASNETALARGE",
             file_model="m-03815-09099",
-            batch_size=16,
+            batch_size=14,
             img_size=354,
             crop_size=331,
             target_mean=0.5,
