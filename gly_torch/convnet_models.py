@@ -47,7 +47,9 @@ MODELS = {
     'DENSENET161-LARGE3': torchvision.models.densenet161,
     'DENSENET169-LARGE3': torchvision.models.densenet169,
     'DENSENET201-LARGE3': torchvision.models.densenet201,
-    'INCEPTIONV4-LARGE': pretrainedmodels.models.inceptionv4
+    'INCEPTIONV4-LARGE': pretrainedmodels.models.inceptionv4,
+    'POLYNET': pretrainedmodels.models.polynet,
+    'PNASNET': pretrainedmodels.models.pnasnet5large
 }
 
 
@@ -55,9 +57,11 @@ class ConvnetModel(nn.Module):
     def __init__(self, model_name, *, class_count, is_trained):
         super(ConvnetModel, self).__init__()
         # load model and weights
-        if model_name.startswith('NASNET') or model_name == 'INCEPTIONRESNETV2' or model_name.startswith('INCEPTIONV4'):
+        if (model_name.startswith('NASNET') or model_name == 'INCEPTIONRESNETV2' or model_name.startswith('INCEPTIONV4')
+            or model_name == 'PNASNET'):
             self.convnet = MODELS[model_name](pretrained='imagenet+background')
-        elif model_name.startswith('SE') or model_name.startswith('RESNEXT') or model_name == 'XCEPTION':
+        elif (model_name.startswith('SE') or model_name.startswith('RESNEXT') or model_name == 'XCEPTION' or
+              model_name == "POLYNET"):
             self.convnet = MODELS[model_name](pretrained='imagenet')
         elif model_name == 'INCEPTIONV3':
             self.convnet = MODELS[model_name](pretrained='imagenet', transform_input=False, aux_logits=False)
@@ -81,7 +85,8 @@ class ConvnetModel(nn.Module):
         elif model_name.startswith('RESNET') or model_name == 'INCEPTIONV3':
             kernel_count = self.convnet.fc.in_features
         elif (model_name.startswith('NASNET') or model_name.startswith('SE') or model_name == 'INCEPTIONRESNETV2'
-              or model_name.startswith('INCEPTIONV4') or model_name.startswith('RESNEXT') or model_name == 'XCEPTION'):
+              or model_name.startswith('INCEPTIONV4') or model_name.startswith('RESNEXT') or model_name == 'XCEPTION'
+              or model_name == 'POLYNET' or model_name == 'PNASNET'):
             kernel_count = self.convnet.last_linear.in_features
         else:
             print('ERROR')
@@ -90,7 +95,8 @@ class ConvnetModel(nn.Module):
         if model_name.startswith('RESNET') or model_name == 'INCEPTIONV3':
             self.convnet.fc = nn.Linear(kernel_count, class_count)
         elif (model_name.startswith('NASNET') or model_name.startswith('SE') or model_name == 'INCEPTIONRESNETV2'
-              or model_name == 'INCEPTIONV4' or model_name.startswith('RESNEXT') or model_name == 'XCEPTION'):
+              or model_name == 'INCEPTIONV4' or model_name.startswith('RESNEXT') or model_name == 'XCEPTION'
+              or model_name == 'POLYNET' or model_name == 'PNASNET'):
             self.convnet.last_linear = nn.Linear(kernel_count, class_count)
         elif model_name.startswith('DUAL'):
             self.convnet.classifier = nn.Conv2d(kernel_count, class_count, kernel_size=1, bias=True)
