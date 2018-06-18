@@ -12,7 +12,7 @@ class Config:
     def __init__(self, *, model_name, file_model, batch_size, img_size, crop_size, target_mean, target_std, positions,
                  data_transform):
         self.model_name = model_name
-        self.path_model = "src/models/" + file_model
+        self.path_model = file_model
         self.batch_size = batch_size
         self.data_transform_test = data_transform.get_test(
             img_size=img_size, crop_size=crop_size, target_mean=target_mean, target_std=target_std, positions=positions)
