@@ -5,6 +5,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torchvision
 
+import densenet_custom
+
 MODELS = {
     'DENSENET121': torchvision.models.densenet121,
     'DENSENET161': torchvision.models.densenet161,
@@ -49,7 +51,8 @@ MODELS = {
     'DENSENET201-LARGE3': torchvision.models.densenet201,
     'INCEPTIONV4-LARGE': pretrainedmodels.models.inceptionv4,
     'POLYNET': pretrainedmodels.models.polynet,
-    'PNASNET': pretrainedmodels.models.pnasnet5large
+    'PNASNET': pretrainedmodels.models.pnasnet5large,
+    'DENSENET201-MODIFIED': densenet_custom.densenet201_modified
 }
 
 
