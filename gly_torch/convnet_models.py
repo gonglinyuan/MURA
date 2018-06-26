@@ -100,8 +100,8 @@ class ConvnetModel(nn.Module):
             self.convnet.fc = nn.Linear(kernel_count, class_count)
         elif model_name.startswith('SE'):
             if model_name.endswith('LARGE'):
-                print(123132)
                 self.convnet.avgpool = nn.AvgPool2d(8, stride=1)
+                kernel_count = kernel_count * 4
             self.convnet.last_linear = nn.Linear(kernel_count, class_count)
         elif (model_name.startswith('NASNET') or model_name == 'INCEPTIONRESNETV2'
               or model_name == 'INCEPTIONV4' or model_name.startswith('RESNEXT') or model_name == 'XCEPTION'
