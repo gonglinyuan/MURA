@@ -62,7 +62,7 @@ class ConvnetModel(nn.Module):
         super(ConvnetModel, self).__init__()
         # load model and weights
         if (model_name.startswith('NASNET') or model_name == 'INCEPTIONRESNETV2' or model_name.startswith('INCEPTIONV4')
-            or model_name == 'PNASNET'):
+                or model_name == 'PNASNET'):
             self.convnet = MODELS[model_name](pretrained='imagenet+background')
         elif (model_name.startswith('SE') or model_name.startswith('RESNEXT') or model_name == 'XCEPTION' or
               model_name == "POLYNET"):
@@ -98,10 +98,12 @@ class ConvnetModel(nn.Module):
         # add last layer
         if model_name.startswith('RESNET') or model_name == 'INCEPTIONV3':
             self.convnet.fc = nn.Linear(kernel_count, class_count)
-        elif model_name.startswith('SE') and model_name.endswith('LARGE'):
-            self.convnet.avgpool = nn.AvgPool2d(8, stride=1)
+        elif model_name.startswith('SE'):
+            if model_name.endswith('LARGE'):
+                print(123132)
+                self.convnet.avgpool = nn.AvgPool2d(8, stride=1)
             self.convnet.last_linear = nn.Linear(kernel_count, class_count)
-        elif (model_name.startswith('NASNET') or model_name.startswith('SE') or model_name == 'INCEPTIONRESNETV2'
+        elif (model_name.startswith('NASNET') or model_name == 'INCEPTIONRESNETV2'
               or model_name == 'INCEPTIONV4' or model_name.startswith('RESNEXT') or model_name == 'XCEPTION'
               or model_name == 'POLYNET' or model_name == 'PNASNET'):
             self.convnet.last_linear = nn.Linear(kernel_count, class_count)
