@@ -52,7 +52,8 @@ MODELS = {
     'INCEPTIONV4-LARGE': pretrainedmodels.models.inceptionv4,
     'POLYNET': pretrainedmodels.models.polynet,
     'PNASNET': pretrainedmodels.models.pnasnet5large,
-    'DENSENET201-MODIFIED': densenet_custom.densenet201_modified
+    'DENSENET201-MODIFIED': densenet_custom.densenet201_modified,
+    'SENET154-LARGE': pretrainedmodels.models.senet154
 }
 
 
@@ -97,6 +98,9 @@ class ConvnetModel(nn.Module):
         # add last layer
         if model_name.startswith('RESNET') or model_name == 'INCEPTIONV3':
             self.convnet.fc = nn.Linear(kernel_count, class_count)
+        elif model_name.startswith('SE') and model_name.endswith('LARGE'):
+            self.convnet.avgpool = nn.AvgPool2d(8, stride=1)
+            self.convnet.last_linear = nn.Linear(kernel_count, class_count)
         elif (model_name.startswith('NASNET') or model_name.startswith('SE') or model_name == 'INCEPTIONRESNETV2'
               or model_name == 'INCEPTIONV4' or model_name.startswith('RESNEXT') or model_name == 'XCEPTION'
               or model_name == 'POLYNET' or model_name == 'PNASNET'):
