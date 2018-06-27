@@ -71,7 +71,7 @@ class ConvnetModel(nn.Module):
         elif model_name == 'INCEPTIONV3':
             self.convnet = MODELS[model_name](pretrained='imagenet', transform_input=False, aux_logits=False)
         elif model_name.startswith('DUAL'):
-            if model_name.endswith('5k'):
+            if model_name.endswith('5k') or model_name.endswith('5k-LARGE'):
                 self.convnet = MODELS[model_name](pretrained='imagenet+5k')
             else:
                 self.convnet = MODELS[model_name](pretrained='imagenet')
