@@ -53,7 +53,8 @@ MODELS = {
     'POLYNET': pretrainedmodels.models.polynet,
     'PNASNET': pretrainedmodels.models.pnasnet5large,
     'DENSENET201-MODIFIED': densenet_custom.densenet201_modified,
-    'SENET154-LARGE': pretrainedmodels.models.senet154
+    'SENET154-LARGE': pretrainedmodels.models.senet154,
+    'DUALPATHNET107_5k-LARGE': pretrainedmodels.models.dpn107
 }
 
 
@@ -74,6 +75,8 @@ class ConvnetModel(nn.Module):
                 self.convnet = MODELS[model_name](pretrained='imagenet+5k')
             else:
                 self.convnet = MODELS[model_name](pretrained='imagenet')
+            if model_name.endswith('LARGE'):
+                self.convnet.test_time_pool = False
         else:
             self.convnet = MODELS[model_name](pretrained=is_trained)
         # get input size of the last layer
