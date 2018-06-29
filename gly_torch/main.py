@@ -22,7 +22,7 @@ def run_train():
     path_data_train = '../../MURA_trainval_keras'
     path_data_valid = '../../MURA_valid1_keras'
     path_log = '../../trained_models/' + timestamp + '/tb'
-    batch_size = 12
+    batch_size = 8
     epoch_num = 80
     img_size = 331
     crop_size = 331
