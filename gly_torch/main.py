@@ -17,20 +17,20 @@ def main():
 
 def run_train():
     timestamp = time.strftime("%Y%m%d") + '-' + time.strftime("%H%M%S")
-    model_name = 'DUALPATHNET107_5k-LARGE'
+    model_name = 'DENSENET169-LARGE3'
     model_pretrained = True
     path_data_train = '../../MURA_trainval_keras'
     path_data_valid = '../../MURA_valid1_keras'
     path_log = '../../trained_models/' + timestamp + '/tb'
     batch_size = 16
-    epoch_num = 100
-    img_size = 293
-    crop_size = 256
-    target_mean = np.array([124 / 255, 117 / 255, 104 / 255])
-    target_std = np.array([1 / (.0167 * 255)] * 3)
+    epoch_num = 80
+    img_size = 320
+    crop_size = 320
+    target_mean = np.array([0.485, 0.456, 0.406])
+    target_std = np.array([0.229, 0.224, 0.225])
     path_model = '../../trained_models/' + timestamp + '/m-' + timestamp
 
-    data_transform = DataTransform(no_bg=True, pad=True)
+    data_transform = DataTransform(aug="rot30", no_bg=True, pad=True, no_crop=True)
     data_transform_train = data_transform.get_train(img_size=img_size, crop_size=crop_size, target_mean=target_mean,
                                                     target_std=target_std)
     data_transform_valid = data_transform.get_valid(img_size=img_size, crop_size=crop_size, target_mean=target_mean,

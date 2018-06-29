@@ -1,7 +1,7 @@
 import numpy as np
 import torch
 import torchvision.transforms as transforms
-from PIL import ImageFilter, ImageOps
+from PIL import ImageFilter, ImageOps, Image
 
 DATA_MEAN = 0.20558404267255
 DATA_STD = 0.17694948680626902473216631207703
@@ -60,8 +60,13 @@ def get_normalize_no_bg(target_mean, target_std):
     return transforms.Normalize(miu.tolist(), sigma.tolist())
 
 
+class HorizontalFlip(object):
+    def __call__(self, img):
+        return img, img.transpose(Image.FLIP_LEFT_RIGHT)
+
+
 class DataTransform:
-    def __init__(self, *, revised=False, aug=None, no_bg=False, pad=False, to_rgb=False):
+    def __init__(self, *, revised=False, aug=None, no_bg=False, pad=False, to_rgb=False, no_crop=False):
         self.revised = revised
         if aug:
             self.aug = aug.lower()
@@ -70,6 +75,7 @@ class DataTransform:
         self.no_bg = no_bg
         self.pad = pad
         self.to_rgb = to_rgb
+        self.no_crop = no_crop
 
     def get_train(self, img_size=DEFAULT_IMG_SIZE, crop_size=DEFAULT_CROP_SIZE, target_mean=0.0, target_std=1.0):
         trans_list = []
@@ -92,6 +98,8 @@ class DataTransform:
         if self.revised:
             trans_list.append(transforms.Resize(img_size))
             trans_list.append(transforms.RandomCrop(crop_size))
+        elif self.no_crop:
+            trans_list.append(transforms.Resize((img_size, img_size)))
         else:
             trans_list.append(transforms.RandomResizedCrop(crop_size))
         trans_list.append(transforms.RandomHorizontalFlip())
@@ -110,8 +118,12 @@ class DataTransform:
                 trans_list.append(transforms.Lambda(_pad))
         else:
             normalize = get_normalize(target_mean, target_std)
-        trans_list.append(transforms.Resize(img_size))
-        trans_list.append(transforms.TenCrop(crop_size))
+        if self.no_crop:
+            trans_list.append(transforms.Resize((img_size, img_size)))
+            trans_list.append(HorizontalFlip())
+        else:
+            trans_list.append(transforms.Resize(img_size))
+            trans_list.append(transforms.TenCrop(crop_size))
         trans_list.append(transforms.Lambda(lambda crops: torch.stack([transforms.ToTensor()(crop) for crop in crops])))
         trans_list.append(transforms.Lambda(lambda crops: torch.stack([normalize(crop) for crop in crops])))
         return transforms.Compose(trans_list)
