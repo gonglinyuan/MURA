@@ -159,6 +159,8 @@ class DataTransform:
                 s += "pad"
         if self.to_rgb:
             s += "2rgb"
+        if self.no_crop:
+            s += "nocrop"
         if s != "":
             s = "-" + s
         return s
