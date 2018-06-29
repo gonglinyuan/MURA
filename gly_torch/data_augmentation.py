@@ -99,7 +99,8 @@ class DataTransform:
             trans_list.append(transforms.Resize(img_size))
             trans_list.append(transforms.RandomCrop(crop_size))
         elif self.no_crop:
-            trans_list.append(transforms.Resize((img_size, img_size)))
+            # trans_list.append(transforms.Resize((img_size, img_size)))
+            trans_list.append(transforms.RandomResizedCrop(img_size))
         else:
             trans_list.append(transforms.RandomResizedCrop(crop_size))
         trans_list.append(transforms.RandomHorizontalFlip())
