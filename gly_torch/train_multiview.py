@@ -83,7 +83,7 @@ def epoch_train(model, data_loader, optimizer, device, max_batch_size):
     for (xx, yy) in data_loader:
         xx = xx[0]
         yy = yy[0]
-        print(xx.shape, yy.shape)
+        # print(xx.shape, yy.shape)
         sz = xx.shape[0]
         if num + sz > max_batch_size:
             x = torch.cat(imgs).to(device)
