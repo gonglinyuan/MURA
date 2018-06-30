@@ -82,7 +82,7 @@ def epoch_train(model, data_loader, optimizer, device, max_batch_size):
     for (xx, yy) in data_loader:
         xx = xx[0]
         yy = yy[0]
-        print(xx.shape, yy.shape)
+        # print(xx.shape, yy.shape)
         sz = xx.shape[0]
         if num + sz > max_batch_size:
             x = torch.cat(imgs).to(device)
@@ -120,7 +120,7 @@ def epoch_valid(model, data_loader, device, max_batch_size):
     for (xx, yy) in data_loader:
         xx = xx[0]
         yy = yy[0]
-        print(xx.shape, yy.shape)
+        # print(xx.shape, yy.shape)
         sz = xx.shape[0]
         if num + sz > max_batch_size:
             x = torch.cat(imgs)
@@ -173,7 +173,7 @@ def test(*, path_data, path_root, path_model, model_name, model_pretrained, batc
     for (xx, yy) in data_loader_test:
         xx = xx[0]
         yy = yy[0]
-        print(xx.shape, yy.shape)
+        # print(xx.shape, yy.shape)
         sz = xx.shape[0]
         if num + sz > batch_size:
             x = torch.cat(imgs)

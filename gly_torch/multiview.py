@@ -27,9 +27,10 @@ def run_train():
     crop_size = 331
     target_mean = 0.5
     target_std = 0.5
+    checkpoint = "../../trained_models/03879-09080-inceptionv4large-adam-augrot30nobgpad/m-20180601-025507-A.pth.tar"
     path_model = '../../trained_models/' + timestamp + '/m-' + timestamp
 
-    data_transform = DataTransform(aug="slight", no_bg=True, pad=True, no_crop=True)
+    data_transform = DataTransform(aug="rot30", no_bg=True, pad=True, no_crop=True)
     data_transform_train = data_transform.get_train(img_size=img_size, crop_size=crop_size, target_mean=target_mean,
                                                     target_std=target_std)
     data_transform_valid = data_transform.get_valid(img_size=img_size, crop_size=crop_size, target_mean=target_mean,
@@ -55,7 +56,7 @@ def run_train():
         model_pretrained=model_pretrained,
         batch_size=batch_size,
         epoch_num=epoch_num,
-        checkpoint=None,
+        checkpoint=checkpoint,
         device=device,
         transform_train=data_transform_train,
         transform_valid=data_transform_valid,
