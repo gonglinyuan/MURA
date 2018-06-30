@@ -90,7 +90,6 @@ def epoch_train(model, data_loader, optimizer, device, max_batch_size):
             y_hat = torch.empty(idx).to(device)
             for i in range(idx):
                 y_hat[i] = torch.mean(y_img[rng[i][0], rng[i][1]])
-            imgs, rng = [], []
             y = labels[:idx].to(torch.float32).to(device)
             loss_fn = torch.nn.BCELoss(size_average=True)
             loss = loss_fn(y_hat, y)
@@ -99,6 +98,8 @@ def epoch_train(model, data_loader, optimizer, device, max_batch_size):
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
+            num, idx = 0, 0
+            imgs, rng = [], []
         rng.append((num, num + sz))
         labels[idx] = yy
         imgs.append(xx)
@@ -132,12 +133,13 @@ def epoch_valid(model, data_loader, device, max_batch_size):
             y_hat = torch.empty(idx).to(device)
             for i in range(idx):
                 y_hat[i] = torch.mean(y_img[rng[i][0], rng[i][1]])
-            imgs, rng = [], []
             y = labels[:idx].to(torch.float32).to(device)
             true = torch.cat((true, y), 0)
             score = torch.cat((score, y_hat), 0)
             loss_fn = torch.nn.BCELoss(size_average=True)
             bce.append(loss_fn(y_hat, y.to(torch.float32)))
+            num, idx = 0, 0
+            imgs, rng = [], []
         rng.append((num, num + sz))
         labels[idx] = yy
         imgs.append(xx)
@@ -179,7 +181,6 @@ def test(*, path_data, path_root, path_model, model_name, model_pretrained, batc
             x = x.to(device)
             with torch.no_grad():
                 y_img = torch.nn.Sigmoid()(model(x.view(-1, c, h, w)))
-            imgs, rng = [], []
             y_img = y_img.to(CPU)
             y_img = y_img.view(bs, n_crops).mean(1)
             y_hat = torch.empty(idx).to(device)
@@ -190,6 +191,8 @@ def test(*, path_data, path_root, path_model, model_name, model_pretrained, batc
             score = torch.cat((score, y_hat), 0)
             loss_fn = torch.nn.BCELoss(size_average=True)
             bce.append(loss_fn(y_hat, y.to(torch.float32)))
+            num, idx = 0, 0
+            imgs, rng = [], []
         rng.append((num, num + sz))
         labels[idx] = yy
         imgs.append(xx)
