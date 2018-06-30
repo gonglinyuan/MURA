@@ -26,7 +26,7 @@ def train(*, path_data, path_root, path_log, path_model, model_name, model_pretr
     if checkpoint:
         model_checkpoint = torch.load(checkpoint)
         model.load_state_dict(model_checkpoint['state_dict'])
-        optimizer.load_state_dict(model_checkpoint['optimizer'])
+        # optimizer.load_state_dict(model_checkpoint['optimizer'])
     # Write Tensorboard
     writer = SummaryWriter(log_dir=path_log)
     # ---- TRAIN THE NETWORK
@@ -74,6 +74,7 @@ def train(*, path_data, path_root, path_log, path_model, model_name, model_pretr
 
 def epoch_train(model, data_loader, optimizer, device, max_batch_size):
     model.train()
+    loss_fn = torch.nn.BCELoss(size_average=True)
     running_loss, running_norm = 0.0, 0.0
     num, idx = 0, 0
     rng = []
@@ -82,7 +83,7 @@ def epoch_train(model, data_loader, optimizer, device, max_batch_size):
     for (xx, yy) in data_loader:
         xx = xx[0]
         yy = yy[0]
-        # print(xx.shape, yy.shape)
+        print(xx.shape, yy.shape)
         sz = xx.shape[0]
         if num + sz > max_batch_size:
             x = torch.cat(imgs).to(device)
@@ -91,7 +92,6 @@ def epoch_train(model, data_loader, optimizer, device, max_batch_size):
             for i in range(idx):
                 y_hat[i] = torch.mean(y_img[rng[i][0]:rng[i][1]])
             y = labels[:idx].to(torch.float32).to(device)
-            loss_fn = torch.nn.BCELoss(size_average=True)
             loss = loss_fn(y_hat, y)
             running_loss = running_loss * EMA_ALPHA_TRAIN_LOSS + loss.item()
             running_norm = running_norm * EMA_ALPHA_TRAIN_LOSS + 1.0
