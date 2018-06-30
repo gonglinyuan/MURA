@@ -28,7 +28,7 @@ class MultiviewData(torch.utils.data.Dataset):
         self.samples = []
         for prefix, label in labels.items():
             self.samples.append((prefix, label, image_paths[prefix]))
-        np.random.shuffle(self.samples)
+        # np.random.shuffle(self.samples)
         self.loader = img_loader
         self.transform = transform
         self.img_prefix = img_prefix
