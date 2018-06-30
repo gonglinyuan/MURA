@@ -77,7 +77,7 @@ def epoch_train(model, data_loader, optimizer, device, max_batch_size):
     running_loss, running_norm = 0.0, 0.0
     num, idx = 0, 0
     rng = []
-    labels = torch.zeros(max_batch_size)
+    labels = torch.zeros(max_batch_size, dtype=torch.long)
     imgs = []
     for (xx, yy) in data_loader:
         xx = xx[0]
@@ -115,7 +115,7 @@ def epoch_valid(model, data_loader, device, max_batch_size):
     model.eval()
     num, idx = 0, 0
     rng = []
-    labels = torch.zeros(max_batch_size)
+    labels = torch.zeros(max_batch_size, dtype=torch.long)
     imgs = []
     for (xx, yy) in data_loader:
         xx = xx[0]
@@ -168,7 +168,7 @@ def test(*, path_data, path_root, path_model, model_name, model_pretrained, batc
     model.eval()
     num, idx = 0, 0
     rng = []
-    labels = torch.zeros(batch_size)
+    labels = torch.zeros(batch_size, dtype=torch.long)
     imgs = []
     for (xx, yy) in data_loader_test:
         xx = xx[0]
