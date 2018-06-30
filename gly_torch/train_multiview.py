@@ -130,7 +130,7 @@ def epoch_valid(model, data_loader, device, max_batch_size):
                 y_img = torch.nn.Sigmoid()(model(x.view(-1, c, h, w)))
             y_img = y_img.to(CPU)
             y_img = y_img.view(bs, n_crops).mean(1)
-            y_hat = torch.empty(idx).to(device)
+            y_hat = torch.empty(idx)
             for i in range(idx):
                 y_hat[i] = torch.mean(y_img[rng[i][0]:rng[i][1]])
             y = labels[:idx]
@@ -183,7 +183,7 @@ def test(*, path_data, path_root, path_model, model_name, model_pretrained, batc
                 y_img = torch.nn.Sigmoid()(model(x.view(-1, c, h, w)))
             y_img = y_img.to(CPU)
             y_img = y_img.view(bs, n_crops).mean(1)
-            y_hat = torch.empty(idx).to(device)
+            y_hat = torch.empty(idx)
             for i in range(idx):
                 y_hat[i] = torch.mean(y_img[rng[i][0]:rng[i][1]])
             y = labels[:idx]
