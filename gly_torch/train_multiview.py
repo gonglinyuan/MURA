@@ -89,7 +89,7 @@ def epoch_train(model, data_loader, optimizer, device, max_batch_size):
             y_img = torch.nn.Sigmoid()(model(x).view(-1))
             y_hat = torch.empty(idx).to(device)
             for i in range(idx):
-                y_hat[i] = torch.mean(y_img[rng[i][0], rng[i][1]])
+                y_hat[i] = torch.mean(y_img[rng[i][0]:rng[i][1]])
             y = labels[:idx].to(torch.float32).to(device)
             loss_fn = torch.nn.BCELoss(size_average=True)
             loss = loss_fn(y_hat, y)
@@ -132,7 +132,7 @@ def epoch_valid(model, data_loader, device, max_batch_size):
             y_img = y_img.view(bs, n_crops).mean(1)
             y_hat = torch.empty(idx).to(device)
             for i in range(idx):
-                y_hat[i] = torch.mean(y_img[rng[i][0], rng[i][1]])
+                y_hat[i] = torch.mean(y_img[rng[i][0]:rng[i][1]])
             y = labels[:idx].to(torch.float32).to(device)
             true = torch.cat((true, y), 0)
             score = torch.cat((score, y_hat), 0)
@@ -185,7 +185,7 @@ def test(*, path_data, path_root, path_model, model_name, model_pretrained, batc
             y_img = y_img.view(bs, n_crops).mean(1)
             y_hat = torch.empty(idx).to(device)
             for i in range(idx):
-                y_hat[i] = torch.mean(y_img[rng[i][0], rng[i][1]])
+                y_hat[i] = torch.mean(y_img[rng[i][0]:rng[i][1]])
             y = labels[:idx].to(torch.float32).to(device)
             true = torch.cat((true, y), 0)
             score = torch.cat((score, y_hat), 0)
