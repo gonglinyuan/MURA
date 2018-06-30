@@ -24,7 +24,7 @@ def train(*, path_data, path_root, path_log, path_model, model_name, model_pretr
     optimizer, scheduler = optimizer_fn(model.parameters())
     # ---- Load checkpoint
     if checkpoint:
-        model_checkpoint = torch.load(checkpoint)
+        model_checkpoint = torch.load(checkpoint, map_location=lambda storage, loc: storage.cuda(0))
         model.load_state_dict(model_checkpoint['state_dict'])
         # optimizer.load_state_dict(model_checkpoint['optimizer'])
     # Write Tensorboard
@@ -158,7 +158,7 @@ def compute_auroc(true, score):
 def test(*, path_data, path_root, path_model, model_name, model_pretrained, batch_size, device, transform):
     cudnn.benchmark = True
     model = ConvnetModel(model_name, class_count=1, is_trained=model_pretrained).to(device)
-    model_checkpoint = torch.load(path_model + ".pth.tar")
+    model_checkpoint = torch.load(path_model + ".pth.tar", map_location=lambda storage, loc: storage.cuda(0))
     model.load_state_dict(model_checkpoint['state_dict'])
     data_loader_test = DataLoader(MultiviewData(path_data + "valid.csv", path_root, transform=transform),
                                   batch_size=1, shuffle=False, num_workers=10, pin_memory=True)
