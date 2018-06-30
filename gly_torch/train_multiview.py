@@ -89,7 +89,7 @@ def epoch_train(model, data_loader, optimizer, device, max_batch_size):
             y_img = torch.nn.Sigmoid()(model(x).view(-1))
             y_hat = torch.empty(idx).to(device)
             for i in range(idx):
-                y_hat[i] = torch.mean(y_img[rng[idx][0], rng[idx][1]])
+                y_hat[i] = torch.mean(y_img[rng[i][0], rng[i][1]])
             imgs, rng = [], []
             y = labels[:idx].to(torch.float32).to(device)
             loss_fn = torch.nn.BCELoss(size_average=True)
@@ -99,12 +99,11 @@ def epoch_train(model, data_loader, optimizer, device, max_batch_size):
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-        else:
-            rng.append((num, num + sz))
-            labels[idx] = yy
-            imgs.append(xx)
-            num += sz
-            idx += 1
+        rng.append((num, num + sz))
+        labels[idx] = yy
+        imgs.append(xx)
+        num += sz
+        idx += 1
     return running_loss / running_norm
 
 
@@ -132,19 +131,18 @@ def epoch_valid(model, data_loader, device, max_batch_size):
             y_img = y_img.view(bs, n_crops).mean(1)
             y_hat = torch.empty(idx).to(device)
             for i in range(idx):
-                y_hat[i] = torch.mean(y_img[rng[idx][0], rng[idx][1]])
+                y_hat[i] = torch.mean(y_img[rng[i][0], rng[i][1]])
             imgs, rng = [], []
             y = labels[:idx].to(torch.float32).to(device)
             true = torch.cat((true, y), 0)
             score = torch.cat((score, y_hat), 0)
             loss_fn = torch.nn.BCELoss(size_average=True)
             bce.append(loss_fn(y_hat, y.to(torch.float32)))
-        else:
-            rng.append((num, num + sz))
-            labels[idx] = yy
-            imgs.append(xx)
-            num += sz
-            idx += 1
+        rng.append((num, num + sz))
+        labels[idx] = yy
+        imgs.append(xx)
+        num += sz
+        idx += 1
     return torch.Tensor(bce).mean().item(), compute_auroc(true, score)
 
 
@@ -186,18 +184,17 @@ def test(*, path_data, path_root, path_model, model_name, model_pretrained, batc
             y_img = y_img.view(bs, n_crops).mean(1)
             y_hat = torch.empty(idx).to(device)
             for i in range(idx):
-                y_hat[i] = torch.mean(y_img[rng[idx][0], rng[idx][1]])
+                y_hat[i] = torch.mean(y_img[rng[i][0], rng[i][1]])
             y = labels[:idx].to(torch.float32).to(device)
             true = torch.cat((true, y), 0)
             score = torch.cat((score, y_hat), 0)
             loss_fn = torch.nn.BCELoss(size_average=True)
             bce.append(loss_fn(y_hat, y.to(torch.float32)))
-        else:
-            rng.append((num, num + sz))
-            labels[idx] = yy
-            imgs.append(xx)
-            num += sz
-            idx += 1
+        rng.append((num, num + sz))
+        labels[idx] = yy
+        imgs.append(xx)
+        num += sz
+        idx += 1
     loss, auroc = torch.Tensor(bce).mean().item(), compute_auroc(true, score)
     auroc = compute_auroc(true, score)
     print('loss = ' + str(loss) + '  AUROC = ' + str(auroc))
