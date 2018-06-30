@@ -18,9 +18,9 @@ def train(*, path_data, path_root, path_log, path_model, model_name, model_pretr
           epoch_num, checkpoint, device, transform_train, transform_valid, optimizer_fn):
     model = ConvnetModel(model_name, class_count=1, is_trained=model_pretrained).to(device)
     data_loader_train = DataLoader(MultiviewData(path_data + "train.csv", path_root, transform=transform_train),
-                                   batch_size=1, shuffle=True, num_workers=0, pin_memory=True)
+                                   batch_size=1, shuffle=True, num_workers=10, pin_memory=True)
     data_loader_valid = DataLoader(MultiviewData(path_data + "valid.csv", path_root, transform=transform_valid),
-                                   batch_size=1, shuffle=False, num_workers=0, pin_memory=True)
+                                   batch_size=1, shuffle=False, num_workers=10, pin_memory=True)
     optimizer, scheduler = optimizer_fn(model.parameters())
     # ---- Load checkpoint
     if checkpoint:
@@ -113,6 +113,7 @@ def epoch_valid(model, data_loader, device, max_batch_size):
     score = torch.FloatTensor()
     bce = []
     model.eval()
+    loss_fn = torch.nn.BCELoss(size_average=True)
     num, idx = 0, 0
     rng = []
     labels = torch.zeros(max_batch_size, dtype=torch.long)
@@ -136,7 +137,6 @@ def epoch_valid(model, data_loader, device, max_batch_size):
             y = labels[:idx]
             true = torch.cat((true, y), 0)
             score = torch.cat((score, y_hat), 0)
-            loss_fn = torch.nn.BCELoss(size_average=True)
             bce.append(loss_fn(y_hat, y.to(torch.float32)))
             num, idx = 0, 0
             imgs, rng = [], []
@@ -161,11 +161,12 @@ def test(*, path_data, path_root, path_model, model_name, model_pretrained, batc
     model_checkpoint = torch.load(path_model + ".pth.tar")
     model.load_state_dict(model_checkpoint['state_dict'])
     data_loader_test = DataLoader(MultiviewData(path_data + "valid.csv", path_root, transform=transform),
-                                  batch_size=1, shuffle=False, num_workers=0, pin_memory=True)
+                                  batch_size=1, shuffle=False, num_workers=10, pin_memory=True)
     true = torch.LongTensor()
     score = torch.FloatTensor()
     bce = []
     model.eval()
+    loss_fn = torch.nn.BCELoss(size_average=True)
     num, idx = 0, 0
     rng = []
     labels = torch.zeros(batch_size, dtype=torch.long)
@@ -189,7 +190,6 @@ def test(*, path_data, path_root, path_model, model_name, model_pretrained, batc
             y = labels[:idx]
             true = torch.cat((true, y), 0)
             score = torch.cat((score, y_hat), 0)
-            loss_fn = torch.nn.BCELoss(size_average=True)
             bce.append(loss_fn(y_hat, y.to(torch.float32)))
             num, idx = 0, 0
             imgs, rng = [], []
