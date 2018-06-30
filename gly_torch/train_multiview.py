@@ -133,7 +133,7 @@ def epoch_valid(model, data_loader, device, max_batch_size):
             y_hat = torch.empty(idx).to(device)
             for i in range(idx):
                 y_hat[i] = torch.mean(y_img[rng[i][0]:rng[i][1]])
-            y = labels[:idx].to(torch.float32).to(device)
+            y = labels[:idx]
             true = torch.cat((true, y), 0)
             score = torch.cat((score, y_hat), 0)
             loss_fn = torch.nn.BCELoss(size_average=True)
@@ -186,7 +186,7 @@ def test(*, path_data, path_root, path_model, model_name, model_pretrained, batc
             y_hat = torch.empty(idx).to(device)
             for i in range(idx):
                 y_hat[i] = torch.mean(y_img[rng[i][0]:rng[i][1]])
-            y = labels[:idx].to(torch.float32).to(device)
+            y = labels[:idx]
             true = torch.cat((true, y), 0)
             score = torch.cat((score, y_hat), 0)
             loss_fn = torch.nn.BCELoss(size_average=True)
