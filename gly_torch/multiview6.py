@@ -21,7 +21,7 @@ def run_train():
     path_data = '../../MURA-v1.0/'
     path_root = '../../'
     path_log = '../../trained_models/' + timestamp + '/tb'
-    batch_size = 6
+    batch_size = 8
     epoch_num = 40
     img_size = 331
     crop_size = 331
@@ -60,7 +60,7 @@ def run_train():
         device=device,
         transform_train=data_transform_train,
         transform_valid=data_transform_valid,
-        optimizer_fn=optimizers.sgd_optimizers
+        optimizer_fn=optimizers.adam_optimizers_tiny
     )
 
     print('NN architecture = ', model_name)

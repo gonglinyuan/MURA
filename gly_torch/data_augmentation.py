@@ -141,8 +141,12 @@ class DataTransform:
                 trans_list.append(transforms.Lambda(_pad))
         else:
             normalize = get_normalize(target_mean, target_std)
-        trans_list.append(transforms.Resize(img_size))
-        trans_list.append(transforms.TenCrop(crop_size))
+        if self.no_crop:
+            trans_list.append(transforms.Resize((img_size, img_size)))
+            trans_list.append(HorizontalFlip())
+        else:
+            trans_list.append(transforms.Resize(img_size))
+            trans_list.append(transforms.TenCrop(crop_size))
         trans_list.append(transforms.Lambda(lambda crops: torch.stack([transforms.ToTensor()(crop) for crop in crops])))
         trans_list.append(transforms.Lambda(lambda crops: crops[positions]))
         trans_list.append(transforms.Lambda(lambda crops: torch.stack([normalize(crop) for crop in crops])))

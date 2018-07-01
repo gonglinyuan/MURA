@@ -2,6 +2,7 @@ import getopt
 import sys
 import time
 
+import numpy as np
 import torch
 
 import optimizers
@@ -16,18 +17,18 @@ def main():
 
 def run_train():
     timestamp = time.strftime("%Y%m%d") + '-' + time.strftime("%H%M%S")
-    model_name = 'NASNETALARGE'
+    model_name = 'SENET154'
     model_pretrained = True
     path_data = '../../MURA-v1.0/'
     path_root = '../../'
     path_log = '../../trained_models/' + timestamp + '/tb'
-    batch_size = 6
+    batch_size = 24
     epoch_num = 40
-    img_size = 331
-    crop_size = 331
-    target_mean = 0.5
-    target_std = 0.5
-    checkpoint = "../../csy_models/03815-09099-nasnetalarge-adam-nobg-pad-batch6/m-20180519-175902-A.pth.tar"
+    img_size = 224
+    crop_size = 224
+    target_mean = np.array([0.485, 0.456, 0.406])
+    target_std = np.array([0.229, 0.224, 0.225])
+    checkpoint = "../../csy_models/03924-09074-senet154-adam-nobg-pad/m-20180519-175850-A.pth.tar"
     path_model = '../../trained_models/' + timestamp + '/m-' + timestamp
 
     data_transform = DataTransform(no_bg=True, pad=True, no_crop=True)
@@ -60,7 +61,7 @@ def run_train():
         device=device,
         transform_train=data_transform_train,
         transform_valid=data_transform_valid,
-        optimizer_fn=optimizers.adam_optimizers_tiny
+        optimizer_fn=optimizers.adam_optimizers_small
     )
 
     print('NN architecture = ', model_name)
