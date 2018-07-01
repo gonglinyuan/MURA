@@ -100,11 +100,18 @@ def epoch_train(model, data_loader, optimizer, device, max_batch_size):
             optimizer.step()
             num, idx = 0, 0
             imgs, rng = [], []
-        rng.append((num, num + sz))
-        labels[idx] = yy
-        imgs.append(xx)
-        num += sz
-        idx += 1
+        if sz > max_batch_size:
+            rng.append((num, num + max_batch_size))
+            labels[idx] = yy
+            imgs.append(xx[:max_batch_size])
+            num += max_batch_size
+            idx += 1
+        else:
+            rng.append((num, num + sz))
+            labels[idx] = yy
+            imgs.append(xx)
+            num += sz
+            idx += 1
     return running_loss / running_norm
 
 
@@ -140,11 +147,18 @@ def epoch_valid(model, data_loader, device, max_batch_size):
             bce.append(loss_fn(y_hat, y.to(torch.float32)))
             num, idx = 0, 0
             imgs, rng = [], []
-        rng.append((num, num + sz))
-        labels[idx] = yy
-        imgs.append(xx)
-        num += sz
-        idx += 1
+        if sz > max_batch_size:
+            rng.append((num, num + max_batch_size))
+            labels[idx] = yy
+            imgs.append(xx[:max_batch_size])
+            num += max_batch_size
+            idx += 1
+        else:
+            rng.append((num, num + sz))
+            labels[idx] = yy
+            imgs.append(xx)
+            num += sz
+            idx += 1
     return torch.Tensor(bce).mean().item(), compute_auroc(true, score)
 
 
@@ -193,11 +207,18 @@ def test(*, path_data, path_root, path_model, model_name, model_pretrained, batc
             bce.append(loss_fn(y_hat, y.to(torch.float32)))
             num, idx = 0, 0
             imgs, rng = [], []
-        rng.append((num, num + sz))
-        labels[idx] = yy
-        imgs.append(xx)
-        num += sz
-        idx += 1
+        if sz > batch_size:
+            rng.append((num, num + batch_size))
+            labels[idx] = yy
+            imgs.append(xx[:batch_size])
+            num += batch_size
+            idx += 1
+        else:
+            rng.append((num, num + sz))
+            labels[idx] = yy
+            imgs.append(xx)
+            num += sz
+            idx += 1
     loss, auroc = torch.Tensor(bce).mean().item(), compute_auroc(true, score)
     auroc = compute_auroc(true, score)
     print('loss = ' + str(loss) + '  AUROC = ' + str(auroc))
