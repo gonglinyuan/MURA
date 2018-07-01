@@ -56,6 +56,10 @@ class ConvnetModel(nn.Module):
             self.convnet = pretrainedmodels.models.nasnetalarge(pretrained=None)
             kernel_count = self.convnet.last_linear.in_features
             self.convnet.last_linear = nn.Linear(kernel_count, 1)
+        elif model_name == "PNASNET":
+            self.convnet = pretrainedmodels.models.pnasnet5large(pretrained='imagenet+background')
+            kernel_count = self.convnet.last_linear.in_features
+            self.convnet.last_linear = nn.Linear(kernel_count, 1)
         else:
             raise Exception("model not found")
 

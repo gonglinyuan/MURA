@@ -22,7 +22,7 @@ def run_train():
     path_data = '../../MURA-v1.0/'
     path_root = '../../'
     path_log = '../../trained_models/' + timestamp + '/tb'
-    batch_size = 18
+    batch_size = 16
     epoch_num = 40
     img_size = 320
     crop_size = 320
@@ -31,7 +31,7 @@ def run_train():
     checkpoint = "../../trained_models/03988-09084-densenet161large3-adam-augrot30nobgpad/m-20180528-013428-A.pth.tar"
     path_model = '../../trained_models/' + timestamp + '/m-' + timestamp
 
-    data_transform = DataTransform(aug="rot30", no_bg=True, pad=True, no_crop=True)
+    data_transform = DataTransform(aug="rot30", no_bg=True, pad=True)
     data_transform_train = data_transform.get_train(img_size=img_size, crop_size=crop_size, target_mean=target_mean,
                                                     target_std=target_std)
     data_transform_valid = data_transform.get_valid(img_size=img_size, crop_size=crop_size, target_mean=target_mean,
@@ -61,7 +61,7 @@ def run_train():
         device=device,
         transform_train=data_transform_train,
         transform_valid=data_transform_valid,
-        optimizer_fn=optimizers.adam_optimizers_small
+        optimizer_fn=optimizers.adam_optimizers_tiny
     )
 
     print('NN architecture = ', model_name)
