@@ -22,7 +22,7 @@ def run_train():
     path_data = '../../MURA-v1.0/'
     path_root = '../../'
     path_log = '../../trained_models/' + timestamp + '/tb'
-    batch_size = 24
+    batch_size = 20
     epoch_num = 40
     img_size = 320
     crop_size = 320
