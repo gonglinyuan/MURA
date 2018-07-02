@@ -31,7 +31,7 @@ def run_train():
     checkpoint = "../../trained_models/04051-09053-vgg16bn-adam-augslightnobgpad/m-20180515-212053-A.pth.tar"
     path_model = '../../trained_models/' + timestamp + '/m-' + timestamp
 
-    data_transform = DataTransform(aug="rot30", no_bg=True, pad=True)
+    data_transform = DataTransform(aug="slight", no_bg=True, pad=True)
     data_transform_train = data_transform.get_train(img_size=img_size, crop_size=crop_size, target_mean=target_mean,
                                                     target_std=target_std)
     data_transform_valid = data_transform.get_valid(img_size=img_size, crop_size=crop_size, target_mean=target_mean,
