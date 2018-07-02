@@ -16,7 +16,7 @@ def main():
 
 def run_train():
     timestamp = time.strftime("%Y%m%d") + '-' + time.strftime("%H%M%S")
-    model_name = 'INCEPTIONV4-LARGE'
+    model_name = 'INCEPTIONV4'
     model_pretrained = True
     path_data = '../../MURA-v1.0/'
     path_root = '../../'
