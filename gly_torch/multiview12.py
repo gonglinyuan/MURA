@@ -27,7 +27,7 @@ def run_train():
     crop_size = 299
     target_mean = 0.5
     target_std = 0.5
-    checkpoint = "../../trained_models/trained_models/04037-09061-inceptionresnetv2-adam-nobgpad/m-20180518-015825-A.pth.tar"
+    checkpoint = "../../trained_models/04037-09061-inceptionresnetv2-adam-nobgpad/m-20180518-015825-A.pth.tar"
     path_model = '../../trained_models/' + timestamp + '/m-' + timestamp
 
     data_transform = DataTransform(no_bg=True, pad=True)
