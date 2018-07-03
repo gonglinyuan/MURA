@@ -22,7 +22,7 @@ def main():
     configs = [
         Config(
             model_name="SENET154",
-            file_model="m-03924-09074",
+            file_model="senet154",
             batch_size=32,
             img_size=256,
             crop_size=224,
@@ -31,7 +31,7 @@ def main():
             data_transform=DataTransform(no_bg=True, pad=True)
         ), Config(
             model_name="SENET154-LARGE",
-            file_model="",
+            file_model="senet154large",
             batch_size=16,
             img_size=293,
             crop_size=256,
@@ -40,7 +40,7 @@ def main():
             data_transform=DataTransform(no_bg=True, pad=True)
         ), Config(
             model_name="INCEPTIONV4",
-            file_model="m-03879-09080",
+            file_model="inceptionv4",
             batch_size=32,
             img_size=341,
             crop_size=299,
@@ -49,7 +49,7 @@ def main():
             data_transform=DataTransform(no_bg=True, pad=True)
         ), Config(
             model_name="INCEPTIONV4-LARGE",
-            file_model="m-03879-09080",
+            file_model="inceptionv4large",
             batch_size=32,
             img_size=378,
             crop_size=331,
@@ -58,7 +58,7 @@ def main():
             data_transform=DataTransform(no_bg=True, pad=True)
         ), Config(
             model_name="INCEPTIONRESNETV2",
-            file_model="m-03879-09080",
+            file_model="inceptionresnetv2",
             batch_size=32,
             img_size=341,
             crop_size=299,
@@ -67,7 +67,7 @@ def main():
             data_transform=DataTransform(no_bg=True, pad=True)
         ), Config(
             model_name="DENSENET201-LARGE3",
-            file_model="m-04001-09065",
+            file_model="densenet201",
             batch_size=48,
             img_size=366,
             crop_size=320,
@@ -76,7 +76,7 @@ def main():
             data_transform=DataTransform(no_bg=True, pad=True)
         ), Config(
             model_name="DENSENET161-LARGE3",
-            file_model="m-03988-09084",
+            file_model="densenet161",
             batch_size=32,
             img_size=366,
             crop_size=320,
@@ -85,7 +85,7 @@ def main():
             data_transform=DataTransform(no_bg=True, pad=True)
         ), Config(
             model_name="DENSENET169-LARGE3",
-            file_model="m-03988-09084",
+            file_model="densenet169",
             batch_size=48,
             img_size=366,
             crop_size=320,
@@ -94,7 +94,7 @@ def main():
             data_transform=DataTransform(no_bg=True, pad=True)
         ), Config(
             model_name="NASNETALARGE",
-            file_model="m-03815-09099",
+            file_model="nasnetalarge",
             batch_size=8,
             img_size=354,
             crop_size=331,
