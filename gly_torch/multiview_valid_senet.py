@@ -3,6 +3,7 @@ import os
 import sys
 import time
 
+import numpy as np
 import torch
 
 import train_multiview
@@ -10,19 +11,19 @@ from data_augmentation import DataTransform
 
 
 def main():
-    run_test("../../trained_models/03959-09056-pnasnet-adam-augrot30nobgpad/m-20180616-052110")
+    run_test("../../trained_models/03926-09052-senet154large-adam-nobgpad/m-20180626-081034")
 
 
 def run_test(path_model):
-    model_name = 'PNASNET'
+    model_name = 'SENET154-LARGE'
     model_pretrained = True
     path_data = '../../MURA-v1.0/'
     path_root = '../../'
-    batch_size = 6
-    img_size = 378
-    crop_size = 331
-    target_mean = 0.5
-    target_std = 0.5
+    batch_size = 16
+    img_size = 293
+    crop_size = 256
+    target_mean = np.array([0.485, 0.456, 0.406])
+    target_std = np.array([0.229, 0.224, 0.225])
     data_transform = DataTransform(no_bg=True, pad=True)
     data_transform_valid = data_transform.get_valid(img_size=img_size, crop_size=crop_size, target_mean=target_mean,
                                                     target_std=target_std)
