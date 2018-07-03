@@ -14,7 +14,7 @@ def main():
 
 
 def run_test(path_model):
-    model_name = 'DENSENET161-LARGE2'
+    model_name = 'DENSENET169-LARGE2'
     model_pretrained = True
     path_data = '../../MURA-v1.0/'
     path_root = '../../'
