@@ -11,7 +11,7 @@ from data_augmentation import DataTransform
 
 
 def main():
-    run_test("../../trained_models/03997-09032-senet154large-adam-augrot30nobgpad/m-20180626-073136")
+    run_test("../../trained_models/multi-03790-09130-senet154large-adamsmall-augslightnobgpad/m-20180702-000940")
 
 
 def run_test(path_model):

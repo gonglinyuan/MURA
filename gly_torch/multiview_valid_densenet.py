@@ -10,17 +10,17 @@ from data_augmentation import DataTransform
 
 
 def main():
-    run_test("../../trained_models/03977-09035-densenet169large2-adam-augrot30nobgpad/m-20180526-120101")
+    run_test("../../trained_models/03977-09049-densenet121large3-adam-augrot30nobgpad/m-20180529-082052")
 
 
 def run_test(path_model):
-    model_name = 'DENSENET169-LARGE2'
+    model_name = 'DENSENET121-LARGE3'
     model_pretrained = True
     path_data = '../../MURA-v1.0/'
     path_root = '../../'
-    batch_size = 20
-    img_size = 329
-    crop_size = 288
+    batch_size = 16
+    img_size = 366
+    crop_size = 320
     target_mean = 0.456
     target_std = 0.225
     data_transform = DataTransform(no_bg=True, pad=True)
