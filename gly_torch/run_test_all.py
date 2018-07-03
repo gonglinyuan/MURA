@@ -103,7 +103,7 @@ def main():
             data_transform=DataTransform(no_bg=True, pad=True)
         ), Config(
             model_name="PNASNET",
-            file_model="m-03815-09099",
+            file_model="pnasnet",
             batch_size=8,
             img_size=354,
             crop_size=331,
