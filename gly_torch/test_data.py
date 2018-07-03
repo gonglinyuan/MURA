@@ -13,6 +13,7 @@ def img_loader(path):
 class TestData(torch.utils.data.Dataset):
     def __init__(self, csv, transform=None):
         self.image_paths = list(pandas.read_csv(csv, header=None).get_values().reshape(-1))
+        print(self.image_paths)
         self.loader = img_loader
         self.transform = transform
 
