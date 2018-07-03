@@ -10,7 +10,7 @@ from data_augmentation import DataTransform
 
 
 def main():
-    run_test("../../trained_models/04051-09053-vgg16bn-adam-augslightnobgpad/m-20180515-212053")
+    run_test("../../trained_models/multi-03896-09107-vgg16bn-adamsmall-augslightnobgpad/m-20180702-000442")
 
 
 def run_test(path_model):
