@@ -10,17 +10,17 @@ from data_augmentation import DataTransform
 
 
 def main():
-    run_test("../../trained_models/03906-09073-inceptionv4-adam-nobgpad/m-20180518-022735")
+    run_test("../../trained_models/03879-09080-inceptionv4large-adam-augrot30nobgpad/m-20180601-025507")
 
 
 def run_test(path_model):
-    model_name = 'INCEPTIONV4'
+    model_name = 'INCEPTIONV4-LARGE'
     model_pretrained = True
     path_data = '../../MURA-v1.0/'
     path_root = '../../'
-    batch_size = 24
-    img_size = 341
-    crop_size = 299
+    batch_size = 18
+    img_size = 378
+    crop_size = 331
     target_mean = 0.5
     target_std = 0.5
     data_transform = DataTransform(no_bg=True, pad=True)
