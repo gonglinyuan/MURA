@@ -19,7 +19,7 @@ def run_test(path_model):
     path_data = '../../MURA-v1.0/'
     path_root = '../../'
     batch_size = 6
-    img_size = 378
+    img_size = 354
     crop_size = 331
     target_mean = 0.5
     target_std = 0.5

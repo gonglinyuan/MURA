@@ -1,7 +1,7 @@
+import pandas
 import sys
 
 import numpy as np
-import pandas
 import torch
 
 import predict
@@ -9,8 +9,8 @@ from data_augmentation import DataTransform
 
 
 class Config:
-    def __init__(self, *, model_name, file_model, batch_size, img_size, crop_size, target_mean, target_std,
-                 positions=(0, 1, 2, 3, 4, 5, 6, 7, 8, 9), data_transform):
+    def __init__(self, *, model_name, file_model, batch_size, img_size, crop_size, target_mean, target_std, positions,
+                 data_transform):
         self.model_name = model_name
         self.path_model = file_model
         self.batch_size = batch_size
@@ -21,6 +21,16 @@ class Config:
 def main():
     configs = [
         Config(
+            model_name="DUALPATHNET107_5k",
+            file_model="m-03916-09049",
+            batch_size=32,
+            img_size=256,
+            crop_size=224,
+            target_mean=np.array([124 / 255, 117 / 255, 104 / 255]),
+            target_std=1 / (.0167 * 255),
+            positions=[0, 1, 8],
+            data_transform=DataTransform(no_bg=True, pad=True)
+        ), Config(
             model_name="SENET154",
             file_model="m-03924-09074",
             batch_size=32,
@@ -28,24 +38,7 @@ def main():
             crop_size=224,
             target_mean=np.array([0.485, 0.456, 0.406]),
             target_std=np.array([0.229, 0.224, 0.225]),
-            data_transform=DataTransform(no_bg=True, pad=True)
-        ), Config(
-            model_name="SENET154-LARGE",
-            file_model="",
-            batch_size=16,
-            img_size=293,
-            crop_size=256,
-            target_mean=np.array([0.485, 0.456, 0.406]),
-            target_std=np.array([0.229, 0.224, 0.225]),
-            data_transform=DataTransform(no_bg=True, pad=True)
-        ), Config(
-            model_name="INCEPTIONV4",
-            file_model="m-03879-09080",
-            batch_size=32,
-            img_size=341,
-            crop_size=299,
-            target_mean=0.5,
-            target_std=0.5,
+            positions=[0, 2, 9],
             data_transform=DataTransform(no_bg=True, pad=True)
         ), Config(
             model_name="INCEPTIONV4-LARGE",
@@ -55,15 +48,17 @@ def main():
             crop_size=331,
             target_mean=0.5,
             target_std=0.5,
+            positions=[1, 2, 9],
             data_transform=DataTransform(no_bg=True, pad=True)
         ), Config(
-            model_name="INCEPTIONRESNETV2",
-            file_model="m-03879-09080",
-            batch_size=32,
-            img_size=341,
-            crop_size=299,
-            target_mean=0.5,
-            target_std=0.5,
+            model_name="VGG16-BN",
+            file_model="m-04051-09053",
+            batch_size=48,
+            img_size=256,
+            crop_size=224,
+            target_mean=0.0,
+            target_std=1.0,
+            positions=[5, 6, 4],
             data_transform=DataTransform(no_bg=True, pad=True)
         ), Config(
             model_name="DENSENET201-LARGE3",
@@ -73,6 +68,7 @@ def main():
             crop_size=320,
             target_mean=0.456,
             target_std=0.225,
+            positions=[5, 7, 3],
             data_transform=DataTransform(no_bg=True, pad=True)
         ), Config(
             model_name="DENSENET161-LARGE3",
@@ -82,15 +78,7 @@ def main():
             crop_size=320,
             target_mean=0.456,
             target_std=0.225,
-            data_transform=DataTransform(no_bg=True, pad=True)
-        ), Config(
-            model_name="DENSENET169-LARGE3",
-            file_model="m-03988-09084",
-            batch_size=48,
-            img_size=366,
-            crop_size=320,
-            target_mean=0.456,
-            target_std=0.225,
+            positions=[6, 3, 4],
             data_transform=DataTransform(no_bg=True, pad=True)
         ), Config(
             model_name="NASNETALARGE",
@@ -100,15 +88,7 @@ def main():
             crop_size=331,
             target_mean=0.5,
             target_std=0.5,
-            data_transform=DataTransform(no_bg=True, pad=True)
-        ), Config(
-            model_name="PNASNET",
-            file_model="m-03815-09099",
-            batch_size=8,
-            img_size=354,
-            crop_size=331,
-            target_mean=0.5,
-            target_std=0.5,
+            positions=[7, 8, 4],
             data_transform=DataTransform(no_bg=True, pad=True)
         )
     ]
