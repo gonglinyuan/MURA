@@ -5,6 +5,7 @@ from PIL import Image
 
 def img_loader(path):
     with open(path, 'rb') as f:
+        print(2)
         img = Image.open(f)
         return img.convert('RGB')
 
