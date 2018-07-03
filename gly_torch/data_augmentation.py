@@ -148,8 +148,8 @@ class DataTransform:
             trans_list.append(transforms.Resize(img_size))
             trans_list.append(transforms.TenCrop(crop_size))
         trans_list.append(transforms.Lambda(lambda crops: torch.stack([transforms.ToTensor()(crop) for crop in crops])))
-        if not self.no_crop:
-            trans_list.append(transforms.Lambda(lambda crops: crops[positions]))
+        # if not self.no_crop:
+        #     trans_list.append(transforms.Lambda(lambda crops: crops[positions]))
         trans_list.append(transforms.Lambda(lambda crops: torch.stack([normalize(crop) for crop in crops])))
         return transforms.Compose(trans_list)
 
