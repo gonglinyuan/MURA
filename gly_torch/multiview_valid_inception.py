@@ -14,7 +14,6 @@ def main():
 
 
 def run_test(path_model):
-    timestamp = time.strftime("%Y%m%d") + '-' + time.strftime("%H%M%S")
     model_name = 'INCEPTIONV4'
     model_pretrained = True
     path_data = '../../MURA-v1.0/'
@@ -42,7 +41,6 @@ def run_test(path_model):
 
     if os.path.exists(path_model + "-L.pth.tar"):
         print('Testing the model with best valid-loss')
-        print('timestamp = ' + timestamp)
         train_multiview.test(
             path_data=path_data,
             path_root=path_root,
@@ -56,7 +54,6 @@ def run_test(path_model):
 
     if os.path.exists(path_model + "-A.pth.tar"):
         print('Testing the model with best valid-auroc')
-        print('timestamp = ' + timestamp)
         train_multiview.test(
             path_data=path_data,
             path_root=path_root,
