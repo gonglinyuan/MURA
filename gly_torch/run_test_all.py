@@ -133,7 +133,7 @@ def run_test(path_csv, config):
         transform=config.data_transform_test
     )
     keys = []
-    result = np.zeros((len(output_lst), 3))
+    result = np.zeros((len(output_lst), 10))
     for i in range(len(output_lst)):
         keys.append(output_lst[i][0])
         result[i, :] = np.array(output_lst[i][1:])
