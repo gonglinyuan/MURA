@@ -10,11 +10,11 @@ from data_augmentation import DataTransform
 
 
 def main():
-    run_test("../../trained_models/03977-09049-densenet121large3-adam-augrot30nobgpad/m-20180529-082052")
+    run_test("../../trained_models/03985-09039-densenet169large3-adam-augrot30nobgpad/m-20180527-050131")
 
 
 def run_test(path_model):
-    model_name = 'DENSENET121-LARGE3'
+    model_name = 'DENSENET169-LARGE3'
     model_pretrained = True
     path_data = '../../MURA-v1.0/'
     path_root = '../../'
