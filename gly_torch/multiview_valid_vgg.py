@@ -21,8 +21,8 @@ def run_test(path_model):
     batch_size = 24
     img_size = 256
     crop_size = 224
-    target_mean = 0.456
-    target_std = 0.225
+    target_mean = 0.0
+    target_std = 1.0
     data_transform = DataTransform(no_bg=True, pad=True)
     data_transform_valid = data_transform.get_valid(img_size=img_size, crop_size=crop_size, target_mean=target_mean,
                                                     target_std=target_std)
