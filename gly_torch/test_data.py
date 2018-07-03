@@ -5,7 +5,6 @@ from PIL import Image
 
 def img_loader(path):
     with open(path, 'rb') as f:
-        print(2)
         img = Image.open(f)
         return img.convert('RGB')
 
@@ -17,6 +16,7 @@ class TestData(torch.utils.data.Dataset):
         self.transform = transform
 
     def __getitem__(self, index):
+        print(2, index)
         path = self.image_paths[index]
         sample = self.loader(path)
         if self.transform is not None:
