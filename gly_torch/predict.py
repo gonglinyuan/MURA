@@ -14,7 +14,7 @@ def predict(*, path_csv, path_model, model_name, batch_size, device, transform):
     print(1)
     data_loader_test = DataLoader(
         TestData(path_csv, transform=transform),
-        batch_size=batch_size, shuffle=False, num_workers=0, pin_memory=True)
+        batch_size=batch_size, shuffle=False, num_workers=0)
     model.eval()
     study_y = {}
     print(0)
