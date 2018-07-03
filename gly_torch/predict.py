@@ -11,13 +11,11 @@ def predict(*, path_csv, path_model, model_name, batch_size, device, transform):
     model = ConvnetModel(model_name).to(device)
     model_checkpoint = torch.load(path_model + ".pth.tar", map_location=lambda storage, loc: storage.cuda(0))
     model.load_state_dict(model_checkpoint['state_dict'])
-    print(1)
     data_loader_test = DataLoader(
         TestData(path_csv, transform=transform),
         batch_size=batch_size, shuffle=False, num_workers=0)
     model.eval()
     study_y = {}
-    print(0)
     for (x, study) in data_loader_test:
         print(x.shape, study.shape)
         bs, n_crops, c, h, w = x.size()
