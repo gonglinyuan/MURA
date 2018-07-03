@@ -126,7 +126,7 @@ def main():
 def run_test(path_csv, config):
     output_lst = predict.predict(
         path_csv=path_csv,
-        path_model="src/model/" + config.path_model,
+        path_model="src/models/" + config.path_model,
         model_name=config.model_name,
         batch_size=config.batch_size,
         device=torch.device("cuda:0"),
