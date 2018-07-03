@@ -13,10 +13,11 @@ def predict(*, path_csv, path_model, model_name, batch_size, device, transform):
     model.load_state_dict(model_checkpoint['state_dict'])
     data_loader_test = DataLoader(
         TestData(path_csv, transform=transform),
-        batch_size=batch_size, shuffle=False, num_workers=0)
+        batch_size=batch_size, shuffle=False, num_workers=0, pin_memory=True)
     model.eval()
     study_y = {}
     for (x, study) in data_loader_test:
+        print(x.shape, study.shape)
         bs, n_crops, c, h, w = x.size()
         x = x.to(device)
         with torch.no_grad():
