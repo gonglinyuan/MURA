@@ -10,7 +10,7 @@ from data_augmentation import DataTransform
 
 
 def main():
-    run_test("../../trained_models/03863-09058-inceptionv4-adam-augrot30nobgpad/m-20180530-203016")
+    run_test("../../trained_models/03893-09074-inceptionv4-adam-augslightnobgpad/m-20180518-024519")
 
 
 def run_test(path_model):
@@ -20,7 +20,7 @@ def run_test(path_model):
     path_data = '../../MURA-v1.0/'
     path_root = '../../'
     batch_size = 24
-    img_size = 299
+    img_size = 341
     crop_size = 299
     target_mean = 0.5
     target_std = 0.5
