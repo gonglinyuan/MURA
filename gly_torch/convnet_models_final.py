@@ -28,7 +28,7 @@ class ConvnetModel(nn.Module):
             self.convnet.avg_pool = nn.AvgPool2d(9, count_include_pad=False)
             self.convnet.last_linear = nn.Linear(kernel_count, 1)
         elif model_name == "INCEPTIONRESNETV2":
-            self.convnet = pretrainedmodels.models.inceptionresnetv2(pretrained='imagenet+background')
+            self.convnet = pretrainedmodels.models.inceptionresnetv2(pretrained=False)
             kernel_count = self.convnet.last_linear.in_features
             self.convnet.last_linear = nn.Linear(kernel_count, 1)
         elif model_name == "DENSENET201-LARGE3":
@@ -75,7 +75,7 @@ class ConvnetModel(nn.Module):
             kernel_count = self.convnet.last_linear.in_features
             self.convnet.last_linear = nn.Linear(kernel_count, 1)
         elif model_name == "PNASNET":
-            self.convnet = pretrainedmodels.models.pnasnet5large(pretrained='imagenet+background')
+            self.convnet = pretrainedmodels.models.pnasnet5large(pretrained=None)
             kernel_count = self.convnet.last_linear.in_features
             self.convnet.last_linear = nn.Linear(kernel_count, 1)
 
