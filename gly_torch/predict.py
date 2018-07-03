@@ -17,7 +17,6 @@ def predict(*, path_csv, path_model, model_name, batch_size, device, transform):
     model.eval()
     study_y = {}
     for (x, study) in data_loader_test:
-        print(x.shape, study.shape)
         bs, n_crops, c, h, w = x.size()
         x = x.to(device)
         with torch.no_grad():
