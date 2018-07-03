@@ -10,12 +10,12 @@ from data_augmentation import DataTransform
 
 class Config:
     def __init__(self, *, model_name, file_model, batch_size, img_size, crop_size, target_mean, target_std,
-                 positions=(0, 1, 2, 3, 4, 5, 6, 7, 8, 9), data_transform):
+                 data_transform):
         self.model_name = model_name
         self.path_model = file_model
         self.batch_size = batch_size
         self.data_transform_test = data_transform.get_test(
-            img_size=img_size, crop_size=crop_size, target_mean=target_mean, target_std=target_std, positions=positions)
+            img_size=img_size, crop_size=crop_size, target_mean=target_mean, target_std=target_std)
 
 
 def main():
