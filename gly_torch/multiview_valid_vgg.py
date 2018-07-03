@@ -10,17 +10,17 @@ from data_augmentation import DataTransform
 
 
 def main():
-    run_test("../../trained_models/04045-09035-vgg16bnlarge-adam-nobgpad/m-20180524-204453")
+    run_test("../../trained_models/04051-09053-vgg16bn-adam-augslightnobgpad/m-20180515-212053")
 
 
 def run_test(path_model):
-    model_name = 'VGG16-BN-LARGE'
+    model_name = 'VGG16-BN'
     model_pretrained = True
     path_data = '../../MURA-v1.0/'
     path_root = '../../'
-    batch_size = 16
-    img_size = 293
-    crop_size = 256
+    batch_size = 24
+    img_size = 256
+    crop_size = 224
     target_mean = 0.456
     target_std = 0.225
     data_transform = DataTransform(no_bg=True, pad=True)
