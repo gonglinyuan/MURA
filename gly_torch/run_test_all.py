@@ -33,7 +33,7 @@ def main():
         ), Config(
             model_name="SENET154-LARGE",
             file_model="senet154large",
-            batch_size=16,
+            batch_size=24,
             img_size=293,
             crop_size=256,
             target_mean=np.array([0.485, 0.456, 0.406]),
@@ -53,7 +53,7 @@ def main():
         ), Config(
             model_name="INCEPTIONV4-LARGE",
             file_model="inceptionv4large",
-            batch_size=16,
+            batch_size=24,
             img_size=378,
             crop_size=331,
             target_mean=0.5,
@@ -63,7 +63,7 @@ def main():
         ), Config(
             model_name="INCEPTIONRESNETV2",
             file_model="inceptionresnetv2",
-            batch_size=32,
+            batch_size=16,
             img_size=341,
             crop_size=299,
             target_mean=0.5,
