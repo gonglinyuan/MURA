@@ -53,7 +53,7 @@ def main():
         ), Config(
             model_name="INCEPTIONV4-LARGE",
             file_model="inceptionv4large",
-            batch_size=24,
+            batch_size=16,
             img_size=378,
             crop_size=331,
             target_mean=0.5,
