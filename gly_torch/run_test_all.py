@@ -63,7 +63,7 @@ def main():
         ), Config(
             model_name="INCEPTIONRESNETV2",
             file_model="inceptionresnetv2",
-            batch_size=16,
+            batch_size=8,
             img_size=341,
             crop_size=299,
             target_mean=0.5,
