@@ -73,7 +73,7 @@ def main():
         ), Config(
             model_name="DENSENET201-LARGE3",
             file_model="densenet201",
-            batch_size=32,
+            batch_size=16,
             img_size=366,
             crop_size=320,
             target_mean=0.456,
@@ -83,7 +83,7 @@ def main():
         ), Config(
             model_name="DENSENET161-LARGE3",
             file_model="densenet161",
-            batch_size=32,
+            batch_size=16,
             img_size=366,
             crop_size=320,
             target_mean=0.456,
@@ -93,7 +93,7 @@ def main():
         ), Config(
             model_name="DENSENET169-LARGE3",
             file_model="densenet169",
-            batch_size=32,
+            batch_size=24,
             img_size=366,
             crop_size=320,
             target_mean=0.456,
