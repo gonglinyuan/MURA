@@ -18,18 +18,24 @@ GPU = torch.device("cuda:0")
 def train(*, path_data_train, path_data_valid, path_log, path_model, config_train, config_valid):
     model = convnet_models.load(
         config_valid["model_name"],
-        input_size=config_valid["input_size"],
+        input_size=config_valid["crop_size"],
         pretrained=True
     )
     data_loader_train = DataLoader(
-        ImageFolder(path_data_train, transform=config_train["transform"].get()),
+        ImageFolder(path_data_train, transform=config_train["transform"].get(
+            img_size=config_train["img_size"],
+            crop_size=config_train["crop_size"]
+        )),
         batch_size=config_train["batch_size"],
         shuffle=True,
         num_workers=10,
         pin_memory=True
     )
     data_loader_valid = DataLoader(
-        ImageFolder(path_data_valid, transform=config_valid["transform"].get()),
+        ImageFolder(path_data_valid, transform=config_valid["transform"].get(
+            img_size=config_valid["img_size"],
+            crop_size=config_valid["crop_size"]
+        )),
         batch_size=config_valid["batch_size"],
         shuffle=False,
         num_workers=10,
@@ -85,12 +91,15 @@ def test(*, path_data, path_model, config_valid):
     cudnn.benchmark = True
     model = convnet_models.load(
         config_valid["model_name"],
-        input_size=config_valid["input_size"],
+        input_size=config_valid["crop_size"],
         pretrained=True
     )
     model.load_state_dict(torch.load(path_model + ".pt")["state_dict"])
     data_loader = DataLoader(
-        ImageFolder(path_data, transform=config_valid["transform"].get()),
+        ImageFolder(path_data, transform=config_valid["transform"].get(
+            img_size=config_valid["img_size"],
+            crop_size=config_valid["crop_size"]
+        )),
         batch_size=config_valid["batch_size"],
         shuffle=False,
         num_workers=10,

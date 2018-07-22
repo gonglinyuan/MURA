@@ -4,6 +4,8 @@ from data_augmentation import DataTransform
 
 if __name__ == "__main__":
     config_train = {
+        "img_size": 320,
+        "crop_size": 320,
         "transform": DataTransform(
             no_bg=True,
             pad=True,
@@ -20,7 +22,8 @@ if __name__ == "__main__":
 
     config_valid = {
         "model_name": "DenseNet169",
-        "input_size": 320,
+        "img_size": 366,
+        "crop_size": 320,
         "transform": DataTransform(
             no_bg=True,
             pad=True,
