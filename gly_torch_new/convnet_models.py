@@ -10,13 +10,13 @@ __all__ = ["load"]
 def load(model_name, input_size, pretrained):
     if model_name in ["DenseNet121", "DenseNet161", "DenseNet169", "DenseNet201"]:
         if model_name == "DenseNet121":
-            model = pretrainedmodels.models.densenet121("imagenet" if pretrained else None)
+            model = pretrainedmodels.models.densenet121(pretrained="imagenet" if pretrained else None)
         elif model_name == "DenseNet161":
-            model = pretrainedmodels.models.densenet161("imagenet" if pretrained else None)
+            model = pretrainedmodels.models.densenet161(pretrained="imagenet" if pretrained else None)
         elif model_name == "DenseNet169":
-            model = pretrainedmodels.models.densenet169("imagenet" if pretrained else None)
+            model = pretrainedmodels.models.densenet169(pretrained="imagenet" if pretrained else None)
         elif model_name == "DenseNet201":
-            model = pretrainedmodels.models.densenet201("imagenet" if pretrained else None)
+            model = pretrainedmodels.models.densenet201(pretrained="imagenet" if pretrained else None)
         else:
             raise Exception()
 
