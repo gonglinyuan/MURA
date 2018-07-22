@@ -36,3 +36,5 @@ def load(model_name, input_size, pretrained):
             model.forward = types.MethodType(forward, model)
     else:
         raise Exception(f"Model {model_name} not found")
+
+    return model
