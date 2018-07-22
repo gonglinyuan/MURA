@@ -20,7 +20,7 @@ def train(*, path_data_train, path_data_valid, path_log, path_model, config_trai
         config_valid["model_name"],
         input_size=config_valid["crop_size"],
         pretrained=True
-    )
+    ).to(GPU)
     data_loader_train = DataLoader(
         ImageFolder(path_data_train, transform=config_train["transform"].get(
             img_size=config_valid["img_size"],
@@ -93,7 +93,7 @@ def test(*, path_data, path_model, config_valid):
         config_valid["model_name"],
         input_size=config_valid["crop_size"],
         pretrained=True
-    )
+    ).to(GPU)
     model.load_state_dict(torch.load(path_model + ".pt")["state_dict"])
     data_loader = DataLoader(
         ImageFolder(path_data, transform=config_valid["transform"].get(
