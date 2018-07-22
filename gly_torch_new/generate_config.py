@@ -4,8 +4,6 @@ from data_augmentation import DataTransform
 
 if __name__ == "__main__":
     config_train = {
-        "img_size": 320,
-        "crop_size": 320,
         "transform": DataTransform(
             no_bg=True,
             pad=True,

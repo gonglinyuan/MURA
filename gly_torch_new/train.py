@@ -23,8 +23,8 @@ def train(*, path_data_train, path_data_valid, path_log, path_model, config_trai
     )
     data_loader_train = DataLoader(
         ImageFolder(path_data_train, transform=config_train["transform"].get(
-            img_size=config_train["img_size"],
-            crop_size=config_train["crop_size"]
+            img_size=config_valid["img_size"],
+            crop_size=config_valid["crop_size"]
         )),
         batch_size=config_train["batch_size"],
         shuffle=True,
