@@ -1,8 +1,8 @@
 import types
 
-import pretrainedmodels
 import torch.nn as nn
 import torch.nn.functional as F
+import torchvision.models
 
 __all__ = ["load"]
 
@@ -10,29 +10,29 @@ __all__ = ["load"]
 def load(model_name, input_size, pretrained):
     if model_name in ["DenseNet121", "DenseNet161", "DenseNet169", "DenseNet201"]:
         if model_name == "DenseNet121":
-            model = pretrainedmodels.models.densenet121(pretrained="imagenet" if pretrained else None)
+            model = torchvision.models.densenet121(pretrained=pretrained)
         elif model_name == "DenseNet161":
-            model = pretrainedmodels.models.densenet161(pretrained="imagenet" if pretrained else None)
+            model = torchvision.models.densenet161(pretrained=pretrained)
         elif model_name == "DenseNet169":
-            model = pretrainedmodels.models.densenet169(pretrained="imagenet" if pretrained else None)
+            model = torchvision.models.densenet169(pretrained=pretrained)
         elif model_name == "DenseNet201":
-            model = pretrainedmodels.models.densenet201(pretrained="imagenet" if pretrained else None)
+            model = torchvision.models.densenet201(pretrained=pretrained)
         else:
             raise Exception()
 
-        kernel_count = model.last_linear.in_features
-        model.last_linear = nn.Linear(kernel_count, 1)
+        kernel_count = model.classifier.in_features
+        model.classifier = nn.Linear(kernel_count, 1)
 
-        if input_size != model.input_size[1]:
+        if input_size != 224:
             assert input_size % 32 == 0
 
-            def logits(self, features):
-                x = F.relu(features, inplace=True)
-                x = F.avg_pool2d(x, kernel_size=input_size // 32, stride=1)
-                x = x.view(x.size(0), -1)
-                x = self.last_linear(x)
-                return x
+            def forward(self, x):
+                features = self.features(x)
+                out = F.relu(features, inplace=True)
+                out = F.avg_pool2d(out, kernel_size=input_size // 32, stride=1).view(features.size(0), -1)
+                out = self.classifier(out)
+                return out
 
-            model.logits = types.MethodType(logits, model)
+            model.forward = types.MethodType(forward, model)
     else:
-        raise Exception("Model {} not found".format(model_name))
+        raise Exception(f"Model {model_name} not found")
