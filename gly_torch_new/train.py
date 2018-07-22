@@ -1,0 +1,133 @@
+import time
+
+import torch
+from tensorboardX import SummaryWriter
+from torch.backends import cudnn
+from torch.utils.data import DataLoader
+from torchvision.datasets import ImageFolder
+
+import convnet_models
+import optimizers
+
+__all__ = ["train", "test"]
+
+CPU = torch.device("cpu")
+GPU = torch.device("cuda:0")
+
+
+def train(*, path_data_train, path_data_valid, path_log, path_model, config_train, config_valid):
+    model = convnet_models.load(
+        config_valid["model_name"],
+        input_size=config_valid["input_size"],
+        pretrained=True
+    )
+    data_loader_train = DataLoader(
+        ImageFolder(path_data_train, transform=config_train["transform"].get()),
+        batch_size=config_train["batch_size"],
+        shuffle=True,
+        num_workers=10,
+        pin_memory=True
+    )
+    data_loader_valid = DataLoader(
+        ImageFolder(path_data_valid, transform=config_valid["transform"].get()),
+        batch_size=config_valid["batch_size"],
+        shuffle=False,
+        num_workers=10,
+        pin_memory=True
+    )
+    optimizer, scheduler = optimizers.load(
+        config_train["optimizer_name"],
+        model.parameters(),
+        lr=config_train["learning_rate"],
+        weight_decay=config_train["weight_decay"],
+        nesterov=config_train["is_nesterov"]
+    )
+    writer = SummaryWriter(log_dir=path_log)
+    loss_fn = torch.nn.BCEWithLogitsLoss(size_average=True)
+    loss_min, acc_max = epoch_valid(model, data_loader_valid, loss_fn)
+    timestamp_now = time.strftime("%Y%m%d") + '-' + time.strftime("%H%M%S")
+    print(f"[000][------][{timestamp_now}]  valid-loss={loss_min:6f}  valid-acc={acc_max:6f}")
+    writer.add_scalar("valid-loss", loss_min, global_step=0)
+    writer.add_scalar("valid-acc", acc_max, global_step=0)
+    for epoch in range(config_train["epoch_num"]):
+        train_loss = epoch_train(model, data_loader_train, optimizer, loss_fn)
+        valid_loss, valid_acc = epoch_valid(model, data_loader_valid, loss_fn)
+        writer.add_scalar("train-loss", train_loss, global_step=epoch + 1)
+        writer.add_scalar("valid-loss", valid_loss, global_step=epoch + 1)
+        writer.add_scalar("valid-acc", valid_acc, global_step=epoch + 1)
+        scheduler.step(valid_loss)
+        timestamp_now = time.strftime("%Y%m%d") + '-' + time.strftime("%H%M%S")
+        save_flag, save_flag_l, save_flag_a = '----', '-', '-'
+        if valid_loss < loss_min:
+            save_flag, save_flag_l = 'save', 'L'
+            loss_min = loss_fn
+            torch.save({
+                "epoch": epoch + 1,
+                "state_dict": model.state_dict(),
+                "loss": loss_min,
+                "acc": acc_max,
+                "optimizer": optimizer.state_dict()
+            }, path_model + "-L.pt")
+        if valid_acc > acc_max:
+            save_flag, save_flag_a = 'save', 'A'
+            acc_max = valid_acc
+            torch.save({
+                "epoch": epoch + 1,
+                "state_dict": model.state_dict(),
+                "loss": loss_min,
+                "acc": acc_max,
+                "optimizer": optimizer.state_dict()
+            }, path_model + "-L.pt")
+        print(f"[{epoch + 1:03d}][{save_flag + save_flag_l + save_flag_a}][{timestamp_now}]  train-loss={train_loss:6f}  valid-loss={valid_loss:6f}  valid-acc={valid_acc:6f}")
+
+
+def test(*, path_data, path_model, config_valid):
+    cudnn.benchmark = True
+    model = convnet_models.load(
+        config_valid["model_name"],
+        input_size=config_valid["input_size"],
+        pretrained=True
+    )
+    model.load_state_dict(torch.load(path_model + ".pt")["state_dict"])
+    data_loader = DataLoader(
+        ImageFolder(path_data, transform=config_valid["transform"].get()),
+        batch_size=config_valid["batch_size"],
+        shuffle=False,
+        num_workers=10,
+        pin_memory=True
+    )
+    loss_fn = torch.nn.BCEWithLogitsLoss(size_average=True)
+    loss, acc = epoch_valid(model, data_loader, loss_fn)
+    timestamp_now = time.strftime("%Y%m%d") + '-' + time.strftime("%H%M%S")
+    print(f"[----test---][{timestamp_now}]  valid-loss={loss:6f}  valid-acc={acc:6f}")
+
+
+def epoch_train(model, data_loader, optimizer, loss_fn):
+    model.train()
+    count, total_loss = 0, 0.0
+    for (x, y) in data_loader:
+        x = x.to(GPU)
+        y = y.to(torch.float32).to(GPU)
+        loss = loss_fn(model(x).view(-1), y)
+        total_loss += loss.item() * y.size(0)
+        count += y.size(0)
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+    return total_loss / count
+
+
+def epoch_valid(model, data_loader, loss_fn):
+    model.eval()
+    correct, count, total_loss = 0, 0, 0.0
+    for (x, y) in data_loader:
+        bs, n_crops, c, h, w = x.size()
+        x, y = x.to(GPU), y.to(GPU)
+        with torch.no_grad():
+            y_hat = model(x.view(-1, c, h, w))
+        y_hat = y_hat.view(bs, n_crops).mean(1)
+        total_loss += loss_fn(y_hat, y.to(torch.float32)) * y.size(0)
+        count += y.size(0)
+        predicted = (y_hat >= 0.0).to(torch.long)
+        correct += (predicted == y).sum().item()
+    return total_loss / count, correct / count
