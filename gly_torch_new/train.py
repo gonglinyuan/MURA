@@ -135,7 +135,7 @@ def epoch_valid(model, data_loader, loss_fn):
         with torch.no_grad():
             y_hat = model(x.view(-1, c, h, w))
         y_hat = y_hat.view(bs, n_crops).mean(1)
-        total_loss += loss_fn(y_hat, y.to(torch.float32)) * y.size(0)
+        total_loss += loss_fn(y_hat, y.to(torch.float32)).item() * y.size(0)
         count += y.size(0)
         predicted = (y_hat >= 0.0).to(torch.long)
         correct += (predicted == y).sum().item()
