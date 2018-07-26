@@ -66,7 +66,7 @@ def train(*, path_data_train, path_data_valid, path_log, path_model, config_trai
         save_flag, save_flag_l, save_flag_a = '----', '-', '-'
         if valid_loss < loss_min:
             save_flag, save_flag_l = 'save', 'L'
-            loss_min = loss_fn
+            loss_min = valid_loss
             torch.save({
                 "epoch": epoch + 1,
                 "state_dict": model.state_dict(),
@@ -129,14 +129,14 @@ def epoch_train(model, data_loader, optimizer, loss_fn):
 def epoch_valid(model, data_loader, loss_fn):
     model.eval()
     correct, count, total_loss = 0, 0, 0.0
-    for (x, y) in data_loader:
-        bs, n_crops, c, h, w = x.size()
-        x, y = x.to(GPU), y.to(GPU)
-        with torch.no_grad():
+    with torch.no_grad():
+        for (x, y) in data_loader:
+            bs, n_crops, c, h, w = x.size()
+            x, y = x.to(GPU), y.to(GPU)
             y_hat = model(x.view(-1, c, h, w))
-        y_hat = y_hat.view(bs, n_crops).mean(1)
-        total_loss += loss_fn(y_hat, y.to(torch.float32)).item() * y.size(0)
-        count += y.size(0)
-        predicted = (y_hat >= 0.0).to(torch.long)
-        correct += (predicted == y).sum().item()
+            y_hat = y_hat.view(bs, n_crops).mean(1)
+            total_loss += loss_fn(y_hat, y.to(torch.float32)).item() * y.size(0)
+            count += y.size(0)
+            predicted = (y_hat >= 0.0).to(torch.long)
+            correct += (predicted == y).sum().item()
     return total_loss / count, correct / count
