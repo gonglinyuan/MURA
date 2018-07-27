@@ -52,8 +52,9 @@ def train(*, path_data_train, path_data_valid, path_log, path_model, config_trai
         nesterov=config_train["is_nesterov"]
     )
     writer = SummaryWriter(log_dir=path_log)
-    loss_fn_train = torch.nn.BCEWithLogitsLoss(size_average=True, pos_weight=POS_WEIGHT_TRAIN)
-    loss_fn_valid = torch.nn.BCEWithLogitsLoss(size_average=True, pos_weight=POS_WEIGHT_VALID)
+    loss_fn_train = torch.nn.BCEWithLogitsLoss(reduction="elementwise_mean", pos_weight=POS_WEIGHT_TRAIN)
+    loss_fn_valid = torch.nn.BCEWithLogitsLoss(reduction="elementwise_mean", size_average=True,
+                                               pos_weight=POS_WEIGHT_VALID)
     loss_min, acc_max = epoch_valid(model, data_loader_valid, loss_fn_valid)
     timestamp_now = time.strftime("%Y%m%d") + '-' + time.strftime("%H%M%S")
     print(f"[000][------][{timestamp_now}]  valid-loss={loss_min:6f}  valid-acc={acc_max:6f}")
@@ -109,7 +110,7 @@ def test(*, path_data, path_model, config_valid):
         num_workers=10,
         pin_memory=True
     )
-    loss_fn = torch.nn.BCEWithLogitsLoss(size_average=True, pos_weight=POS_WEIGHT_VALID)
+    loss_fn = torch.nn.BCEWithLogitsLoss(reduction="elementwise_mean", pos_weight=POS_WEIGHT_VALID)
     loss, acc = epoch_valid(model, data_loader, loss_fn)
     timestamp_now = time.strftime("%Y%m%d") + '-' + time.strftime("%H%M%S")
     print(f"[----test---][{timestamp_now}]  valid-loss={loss:6f}  valid-acc={acc:6f}")
