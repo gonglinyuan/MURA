@@ -70,8 +70,8 @@ def train(*, path_data_train, path_data_valid, path_log, path_model, config_trai
             torch.save({
                 "epoch": epoch + 1,
                 "state_dict": model.state_dict(),
-                "loss": loss_min,
-                "acc": acc_max,
+                "loss": valid_loss,
+                "acc": valid_acc,
                 "optimizer": optimizer.state_dict()
             }, path_model + "-L.pt")
         if valid_acc > acc_max:
@@ -80,10 +80,10 @@ def train(*, path_data_train, path_data_valid, path_log, path_model, config_trai
             torch.save({
                 "epoch": epoch + 1,
                 "state_dict": model.state_dict(),
-                "loss": loss_min,
-                "acc": acc_max,
+                "loss": valid_loss,
+                "acc": valid_acc,
                 "optimizer": optimizer.state_dict()
-            }, path_model + "-L.pt")
+            }, path_model + "-A.pt")
         print(f"[{epoch + 1:03d}][{save_flag + save_flag_l + save_flag_a}][{timestamp_now}]  train-loss={train_loss:6f}  valid-loss={valid_loss:6f}  valid-acc={valid_acc:6f}")
 
 
