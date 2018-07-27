@@ -11,8 +11,8 @@ import optimizers
 
 __all__ = ["train", "test"]
 
-POS_WEIGHT_TRAIN = 8280.0 / 5177.0
-POS_WEIGHT_VALID = 661.0 / 538.0
+POS_WEIGHT_TRAIN = torch.tensor(8280.0 / 5177.0)
+POS_WEIGHT_VALID = torch.tensor(661.0 / 538.0)
 
 CPU = torch.device("cpu")
 GPU = torch.device("cuda:0")
