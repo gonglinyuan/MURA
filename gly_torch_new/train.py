@@ -11,11 +11,11 @@ import optimizers
 
 __all__ = ["train", "test"]
 
-POS_WEIGHT_TRAIN = torch.tensor(8280.0 / 5177.0)
-POS_WEIGHT_VALID = torch.tensor(661.0 / 538.0)
-
 CPU = torch.device("cpu")
 GPU = torch.device("cuda:0")
+
+POS_WEIGHT_TRAIN = torch.tensor(8280.0 / 5177.0).to(GPU)
+POS_WEIGHT_VALID = torch.tensor(661.0 / 538.0).to(GPU)
 
 
 def train(*, path_data_train, path_data_valid, path_log, path_model, config_train, config_valid):
