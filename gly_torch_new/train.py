@@ -11,6 +11,9 @@ import optimizers
 
 __all__ = ["train", "test"]
 
+POS_WEIGHT_TRAIN = 8280.0 / 5177.0
+POS_WEIGHT_VALID = 661.0 / 538.0
+
 CPU = torch.device("cpu")
 GPU = torch.device("cuda:0")
 
@@ -49,15 +52,16 @@ def train(*, path_data_train, path_data_valid, path_log, path_model, config_trai
         nesterov=config_train["is_nesterov"]
     )
     writer = SummaryWriter(log_dir=path_log)
-    loss_fn = torch.nn.BCEWithLogitsLoss(size_average=True)
-    loss_min, acc_max = epoch_valid(model, data_loader_valid, loss_fn)
+    loss_fn_train = torch.nn.BCEWithLogitsLoss(size_average=True, pos_weight=POS_WEIGHT_TRAIN)
+    loss_fn_valid = torch.nn.BCEWithLogitsLoss(size_average=True, pos_weight=POS_WEIGHT_VALID)
+    loss_min, acc_max = epoch_valid(model, data_loader_valid, loss_fn_valid)
     timestamp_now = time.strftime("%Y%m%d") + '-' + time.strftime("%H%M%S")
     print(f"[000][------][{timestamp_now}]  valid-loss={loss_min:6f}  valid-acc={acc_max:6f}")
     writer.add_scalar("valid-loss", loss_min, global_step=0)
     writer.add_scalar("valid-acc", acc_max, global_step=0)
     for epoch in range(config_train["epoch_num"]):
-        train_loss = epoch_train(model, data_loader_train, optimizer, loss_fn)
-        valid_loss, valid_acc = epoch_valid(model, data_loader_valid, loss_fn)
+        train_loss = epoch_train(model, data_loader_train, optimizer, loss_fn_train)
+        valid_loss, valid_acc = epoch_valid(model, data_loader_valid, loss_fn_valid)
         writer.add_scalar("train-loss", train_loss, global_step=epoch + 1)
         writer.add_scalar("valid-loss", valid_loss, global_step=epoch + 1)
         writer.add_scalar("valid-acc", valid_acc, global_step=epoch + 1)
@@ -105,7 +109,7 @@ def test(*, path_data, path_model, config_valid):
         num_workers=10,
         pin_memory=True
     )
-    loss_fn = torch.nn.BCEWithLogitsLoss(size_average=True)
+    loss_fn = torch.nn.BCEWithLogitsLoss(size_average=True, pos_weight=POS_WEIGHT_VALID)
     loss, acc = epoch_valid(model, data_loader, loss_fn)
     timestamp_now = time.strftime("%Y%m%d") + '-' + time.strftime("%H%M%S")
     print(f"[----test---][{timestamp_now}]  valid-loss={loss:6f}  valid-acc={acc:6f}")
