@@ -9,8 +9,8 @@ import train
 def main():
     timestamp = time.strftime("%Y%m%d") + '-' + time.strftime("%H%M%S")
 
-    path_data_train = '../../MURA_trainval_keras'
-    path_data_valid = '../../MURA_valid1_keras'
+    path_data_train = '../../MURA-v1.1-pytorch'
+    path_data_valid = '../../MURA-v1.1-pytorch-valid1'
     path_log = '../../trained_models_new/' + timestamp + '/tb'
     path_model = '../../trained_models_new/' + timestamp + '/m-' + timestamp
     path_config = sys.argv[1]
