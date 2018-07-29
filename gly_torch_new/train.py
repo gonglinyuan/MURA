@@ -55,8 +55,7 @@ def train(*, path_data_train, path_data_valid, path_log, path_model, config_trai
     )
     writer = SummaryWriter(log_dir=path_log)
     loss_fn_train = torch.nn.BCEWithLogitsLoss(reduction="elementwise_mean", pos_weight=POS_WEIGHT_TRAIN)
-    loss_fn_valid = torch.nn.BCEWithLogitsLoss(reduction="elementwise_mean", size_average=True,
-                                               pos_weight=POS_WEIGHT_VALID)
+    loss_fn_valid = torch.nn.BCEWithLogitsLoss(reduction="elementwise_mean", pos_weight=POS_WEIGHT_VALID)
     loss_min, acc_max = epoch_valid(model, data_loader_valid, loss_fn_valid)
     timestamp_now = time.strftime("%Y%m%d") + '-' + time.strftime("%H%M%S")
     print(f"[000][------][{timestamp_now}]  valid-loss={loss_min:6f}  valid-acc={acc_max:6f}")
