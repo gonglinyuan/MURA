@@ -17,23 +17,7 @@ train:
     pad: true
     random_crop_factor: 0.4887602993252463
     ten_crop_positions: null
-  weight_decay: !!python/object/apply:numpy.core.multiarray.scalar
-  - !!python/object/apply:numpy.dtype
-    args:
-    - f8
-    - 0
-    - 1
-    state: !!python/tuple
-    - 3
-    - <
-    - null
-    - null
-    - null
-    - -1
-    - -1
-    - 0
-  - !!binary |
-    QHWFrVnqPj8=
+  weight_decay: 0.0004717320384964481
 valid:
   batch_size: 16
   crop_size: 320

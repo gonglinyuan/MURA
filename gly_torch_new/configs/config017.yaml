@@ -1,6 +1,6 @@
 train:
   batch_size: 20
-  beta1: 0.5121403140199949
+  beta1: 0.8008193191251526
   beta2: 0.999
   epoch_num: 60
   is_nesterov: false
@@ -8,16 +8,16 @@ train:
   optimizer_name: adam
   transform: !!python/object:data_augmentation.DataTransform
     _num_crops: 0
-    aug_rotate: 24.571991260349307
+    aug_rotate: 5.089921740880621
     aug_shear: 0
     crop_mode: random
     flip_h: random
     no_bg: true
     normalize: false
     pad: true
-    random_crop_factor: 0.18906929637013942
+    random_crop_factor: 0.18865920003908784
     ten_crop_positions: null
-  weight_decay: 0.0005224457995448782
+  weight_decay: 0.0002975951490497682
 valid:
   batch_size: 16
   crop_size: 320
