@@ -29,7 +29,7 @@ def main():
     )
 
     print(config)
-    print(timestamp)
+    print(timestamp, path_config)
     train.test(
         path_data=path_data_valid,
         path_model=path_model + "-L",

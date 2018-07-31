@@ -15,7 +15,7 @@ if __name__ == "__main__":
         ),
         "batch_size": 20,
         "optimizer_name": "sgd",
-        "learning_rate": 3e-4,
+        "learning_rate": 0.001,
         "weight_decay": 1e-5,
         "is_nesterov": False,
         "beta1": 0.9,
@@ -40,5 +40,5 @@ if __name__ == "__main__":
         "valid": config_valid
     }
 
-    with open("configs/config023.yaml", "w") as f:
+    with open("configs/config030.yaml", "w") as f:
         yaml.dump(config, f, default_flow_style=False)

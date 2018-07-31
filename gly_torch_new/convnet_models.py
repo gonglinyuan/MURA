@@ -34,6 +34,19 @@ def load(model_name, input_size, pretrained):
                 return out
 
             model.forward = types.MethodType(forward, model)
+    elif model_name in ["VGG11bn", "VGG13bn", "VGG16bn", "VGG19bn"]:
+        if model_name == "VGG11bn":
+            model = torchvision.models.vgg11_bn(pretrained=pretrained)
+        elif model_name == "VGG13bn":
+            model = torchvision.models.vgg13_bn(pretrained=pretrained)
+        elif model_name == "VGG16bn":
+            model = torchvision.models.vgg16_bn(pretrained=pretrained)
+        elif model_name == "VGG19bn":
+            model = torchvision.models.vgg19_bn(pretrained=pretrained)
+        else:
+            raise Exception()
+
+        model.classifier[-1] = nn.Linear(4096, 1)
     else:
         raise Exception(f"Model {model_name} not found")
 
