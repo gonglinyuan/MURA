@@ -8,17 +8,18 @@ if __name__ == "__main__":
         "transform": DataTransform(
             no_bg=True,
             pad=True,
-            aug_rotate=0,
+            aug_rotate=np.random.uniform(0.0, 30.0),
+            aug_shear=np.random.uniform(0.0, 15.0),
             flip_h="random",
             crop_mode="random",
-            random_crop_factor=0.08
+            random_crop_factor=1.0 / np.random.uniform(2.0, 12.5)
         ),
         "batch_size": 20,
-        "optimizer_name": "sgd",
-        "learning_rate": 3e-4,
+        "optimizer_name": "adam",
+        "learning_rate": 3e-5,
         "weight_decay": 0,
         "is_nesterov": False,
-        "beta1": 0.9,
+        "beta1": 1.0 - 1.0 / np.random.uniform(2.0, 10.0),
         "beta2": 0.999,
         "epoch_num": 60
     }
@@ -40,5 +41,5 @@ if __name__ == "__main__":
         "valid": config_valid
     }
 
-    with open("configs/config038.yaml", "w") as f:
+    with open("configs/config041.yaml", "w") as f:
         yaml.dump(config, f, default_flow_style=False)
