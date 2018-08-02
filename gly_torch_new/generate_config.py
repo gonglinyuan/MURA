@@ -17,7 +17,7 @@ if __name__ == "__main__":
         "batch_size": 20,
         "optimizer_name": "adam",
         "learning_rate": 3e-5,
-        "weight_decay": 0,
+        "weight_decay": np.power(10.0, np.random.uniform(-6.0, -3.0)).item(),
         "is_nesterov": False,
         "beta1": 1.0 - 1.0 / np.random.uniform(2.0, 10.0),
         "beta2": 0.999,
@@ -41,5 +41,5 @@ if __name__ == "__main__":
         "valid": config_valid
     }
 
-    with open("configs/config041.yaml", "w") as f:
+    with open("configs/config047.yaml", "w") as f:
         yaml.dump(config, f, default_flow_style=False)
