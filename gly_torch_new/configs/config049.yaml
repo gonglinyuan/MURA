@@ -22,7 +22,7 @@ valid:
   batch_size: 16
   crop_size: 224
   img_size: 256
-  model_name: VGG16bn
+  model_name: VGG19bn
   transform: !!python/object:data_augmentation.DataTransform
     _num_crops: 10
     aug_rotate: 0
