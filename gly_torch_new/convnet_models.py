@@ -3,6 +3,7 @@ import types
 import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.models
+import pretrainedmodels.models
 
 __all__ = ["load"]
 
@@ -47,6 +48,29 @@ def load(model_name, input_size, pretrained):
             raise Exception()
 
         model.classifier[-1] = nn.Linear(4096, 1)
+    elif model_name in ["SENet154"]:
+        if model_name == "SENet154":
+            model = pretrainedmodels.models.senet154(pretrained="imagenet")
+        else:
+            raise Exception()
+
+        kernel_count = model.last_linear.in_features
+        model.last_linear = nn.Linear(kernel_count, 1)
+
+        if input_size % 32 == 0:  # Original mode.
+            model.avg_pool = nn.AvgPool2d(input_size // 32, stride=1)
+        elif input_size % 32 == 31:  # Optimized mode.
+            model.avg_pool = nn.AvgPool2d((input_size - 31) // 32, stride=1)
+    elif model_name in ["DPN107"]:
+        if model_name == "DPN107":
+            model = pretrainedmodels.models.dpn107(pretrained="imagenet+5k")
+        else:
+            raise Exception()
+
+        kernel_count = model.classifier.in_channels
+        model.classifier = nn.Conv2d(kernel_count, 1, kernel_size=1, bias=True)
+
+        assert input_size == 224
     else:
         raise Exception(f"Model {model_name} not found")
 
