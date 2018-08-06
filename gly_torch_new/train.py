@@ -44,13 +44,13 @@ def train(*, path_data_train, path_data_valid, path_log, path_model, config_trai
         num_workers=10,
         pin_memory=True
     )
-    if config_train["differential_lr"]:
+    if config_train["differential_lr"] > 1:
         optimizer, scheduler = optimizers.load_differential_lr(
             config_train["optimizer_name"],
             config_valid["model_name"],
             model,
             lr=config_train["learning_rate"],
-            lr_fc=config_train["learning_rate_fc"],
+            factor=config_train["differential_lr"],
             weight_decay=config_train["weight_decay"],
             nesterov=config_train["is_nesterov"],
             beta1=config_train["beta1"],
@@ -104,6 +104,56 @@ def train(*, path_data_train, path_data_valid, path_log, path_model, config_trai
                 "optimizer": optimizer.state_dict()
             }, path_model + "-A.pt")
         print(f"[{epoch + 1:03d}][{save_flag + save_flag_l + save_flag_a}][{timestamp_now}]  train-loss={train_loss:6f}  valid-loss={valid_loss:6f}  valid-acc={valid_acc:6f}")
+
+
+def find_lr(*, path_data_train, path_log, config_train, config_valid):
+    model = convnet_models.load(
+        config_valid["model_name"],
+        input_size=config_valid["crop_size"],
+        pretrained=True
+    ).to(GPU)
+    data_loader_train = DataLoader(
+        ImageFolder(path_data_train, transform=config_train["transform"].get(
+            img_size=config_valid["img_size"],
+            crop_size=config_valid["crop_size"]
+        )),
+        batch_size=config_train["batch_size"],
+        shuffle=True,
+        num_workers=10,
+        pin_memory=True
+    )
+    if config_train["differential_lr"] > 1:
+        optimizer, scheduler = optimizers.load_finder_differential_lr(
+            config_train["optimizer_name"],
+            config_valid["model_name"],
+            model,
+            lr_min=1e-06,
+            lr_max=0.01,
+            num_epochs=config_train["epoch_num"],
+            factor=config_train["differential_lr"],
+            nesterov=config_train["is_nesterov"],
+            beta1=config_train["beta1"],
+            beta2=config_train["beta2"]
+        )
+    else:
+        optimizer, scheduler = optimizers.load_finder(
+            config_train["optimizer_name"],
+            model.parameters(),
+            lr_min=1e-06,
+            lr_max=0.01,
+            num_epochs=config_train["epoch_num"],
+            nesterov=config_train["is_nesterov"],
+            beta1=config_train["beta1"],
+            beta2=config_train["beta2"]
+        )
+    writer = SummaryWriter(log_dir=path_log)
+    loss_fn = torch.nn.BCEWithLogitsLoss(reduction="elementwise_mean", pos_weight=POS_WEIGHT_TRAIN)
+    for epoch in range(config_train["epoch_num"]):
+        scheduler.step()
+        train_loss = epoch_train(model, data_loader_train, optimizer, loss_fn)
+        writer.add_scalar("train-loss", train_loss, global_step=epoch + 1)
+        timestamp_now = time.strftime("%Y%m%d") + '-' + time.strftime("%H%M%S")
+        print(f"[{epoch + 1:03d}][{timestamp_now}]  train-loss={train_loss:6f}")
 
 
 def test(*, path_data, path_model, config_valid):
