@@ -17,6 +17,8 @@ if __name__ == "__main__":
         "batch_size": 20,
         "optimizer_name": "sgd",
         "learning_rate": 3e-4,
+        "differential_lr": False,
+        "learning_rate_fc": 3e-4,
         "weight_decay": 1e-5,
         "is_nesterov": False,
         "beta1": 0.75,

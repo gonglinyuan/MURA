@@ -44,15 +44,28 @@ def train(*, path_data_train, path_data_valid, path_log, path_model, config_trai
         num_workers=10,
         pin_memory=True
     )
-    optimizer, scheduler = optimizers.load(
-        config_train["optimizer_name"],
-        model.parameters(),
-        lr=config_train["learning_rate"],
-        weight_decay=config_train["weight_decay"],
-        nesterov=config_train["is_nesterov"],
-        beta1=config_train["beta1"],
-        beta2=config_train["beta2"]
-    )
+    if config_train["differential_lr"]:
+        optimizer, scheduler = optimizers.load_differential_lr(
+            config_train["optimizer_name"],
+            config_valid["model_name"],
+            model,
+            lr=config_train["learning_rate"],
+            lr_fc=config_train["learning_rate_fc"],
+            weight_decay=config_train["weight_decay"],
+            nesterov=config_train["is_nesterov"],
+            beta1=config_train["beta1"],
+            beta2=config_train["beta2"]
+        )
+    else:
+        optimizer, scheduler = optimizers.load(
+            config_train["optimizer_name"],
+            model.parameters(),
+            lr=config_train["learning_rate"],
+            weight_decay=config_train["weight_decay"],
+            nesterov=config_train["is_nesterov"],
+            beta1=config_train["beta1"],
+            beta2=config_train["beta2"]
+        )
     writer = SummaryWriter(log_dir=path_log)
     loss_fn_train = torch.nn.BCEWithLogitsLoss(reduction="elementwise_mean", pos_weight=POS_WEIGHT_TRAIN)
     loss_fn_valid = torch.nn.BCEWithLogitsLoss(reduction="elementwise_mean", pos_weight=POS_WEIGHT_VALID)
