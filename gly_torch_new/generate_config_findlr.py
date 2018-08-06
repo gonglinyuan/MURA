@@ -15,18 +15,18 @@ if __name__ == "__main__":
             random_crop_factor=0.08
         ),
         "batch_size": 20,
-        "optimizer_name": "sgd",
+        "optimizer_name": "adam",
         "differential_lr": 10,
         "is_nesterov": False,
-        "beta1": 0.75,
+        "beta1": 0.9,
         "beta2": 0.999,
         "epoch_num": 80
     }
 
     config_valid = {
-        "model_name": "VGG19bn",
-        "img_size": 256,
-        "crop_size": 224
+        "model_name": "SENet154",
+        "img_size": 291,
+        "crop_size": 255
     }
 
     config = {
@@ -34,5 +34,5 @@ if __name__ == "__main__":
         "valid": config_valid
     }
 
-    with open("configs/config054.yaml", "w") as f:
+    with open("configs/config055.yaml", "w") as f:
         yaml.dump(config, f, default_flow_style=False)

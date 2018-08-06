@@ -5,13 +5,28 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 __all__ = ["load", "load_differential_lr", "load_finder", "load_finder_differential_lr"]
 
 
-def _differential_lr_parts(model_name, model):
+def _differential_lr_params(model_name, model, lr, factor):
     if model_name in ["VGG11bn", "VGG13bn", "VGG16bn", "VGG19bn"]:
-        params_features = model.features.paramters()
-        params_classifier = model.classifier.parameters()
+        return [
+            {"params": model.features.parameters()},
+            {"params": model.classifier.parameters(), "lr": lr * factor}
+        ]
+    elif model_name in ["SENet154"]:
+        return [
+            {"params": model.layer0.parameters(), "lr": lr / factor},
+            {"params": model.layer1.parameters()},
+            {"params": model.layer2.parameters()},
+            {"params": model.layer3.parameters()},
+            {"params": model.layer4.parameters()},
+            {"params": model.last_linear.parameters(), "lr": lr * factor}
+        ]
+    elif model_name in ["DPN107"]:
+        return [
+            {"params": model.features.parameters()},
+            {"params": model.classifier.parameters(), "lr": lr * factor}
+        ]
     else:
         raise Exception()
-    return params_features, params_classifier
 
 
 def load(name, parameters, *, lr, weight_decay=1e-5, nesterov=False, beta1=0.9, beta2=0.999):
@@ -27,11 +42,7 @@ def load(name, parameters, *, lr, weight_decay=1e-5, nesterov=False, beta1=0.9, 
 
 def load_differential_lr(name, model_name, model, *, lr, factor, weight_decay=1e-5, nesterov=False, beta1=0.9,
                          beta2=0.999):
-    params_features, params_classifier = _differential_lr_parts(model_name, model)
-    parameters = [
-        {"params": params_features},
-        {"params": params_classifier, "lr": lr * factor}
-    ]
+    parameters = _differential_lr_params(model_name, model, lr, factor)
     if name == "adam":
         optimizer = optim.Adam(parameters, lr=lr, betas=(beta1, beta2), weight_decay=weight_decay)
     elif name == "sgd":
@@ -55,11 +66,7 @@ def load_finder(name, parameters, *, lr_min, lr_max, num_epochs, nesterov=False,
 
 def load_finder_differential_lr(name, model_name, model, *, lr_min, lr_max, num_epochs, factor, nesterov=False,
                                 beta1=0.9, beta2=0.999):
-    params_features, params_classifier = _differential_lr_parts(model_name, model)
-    parameters = [
-        {"params": params_features},
-        {"params": params_classifier, "lr": lr_min * factor}
-    ]
+    parameters = _differential_lr_params(model_name, model, lr_min, factor)
     if name == "adam":
         optimizer = optim.Adam(parameters, lr=lr_min, betas=(beta1, beta2))
     elif name == "sgd":
