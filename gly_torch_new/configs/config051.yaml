@@ -2,9 +2,9 @@ train:
   batch_size: 20
   beta1: 0.75
   beta2: 0.999
-  epoch_num: 60
+  differential_lr: 10
+  epoch_num: 80
   is_nesterov: false
-  learning_rate: 0.0001
   optimizer_name: adam
   transform: !!python/object:data_augmentation.DataTransform
     _num_crops: 0
@@ -17,20 +17,7 @@ train:
     pad: true
     random_crop_factor: 0.08
     ten_crop_positions: null
-  weight_decay: 1.0e-05
 valid:
-  batch_size: 16
   crop_size: 224
   img_size: 256
   model_name: VGG19bn
-  transform: !!python/object:data_augmentation.DataTransform
-    _num_crops: 10
-    aug_rotate: 0
-    aug_shear: 0
-    crop_mode: ten
-    flip_h: null
-    no_bg: true
-    normalize: false
-    pad: true
-    random_crop_factor: 0.08
-    ten_crop_positions: null
