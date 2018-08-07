@@ -25,8 +25,8 @@ if __name__ == "__main__":
 
     config_valid = {
         "model_name": "SENet154",
-        "img_size": 329,
-        "crop_size": 288
+        "img_size": 293,
+        "crop_size": 256
     }
 
     config = {
