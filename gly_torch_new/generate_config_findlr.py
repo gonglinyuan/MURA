@@ -14,7 +14,7 @@ if __name__ == "__main__":
             crop_mode="random",
             random_crop_factor=0.08
         ),
-        "batch_size": 20,
+        "batch_size": 16,
         "optimizer_name": "adam",
         "differential_lr": 10,
         "is_nesterov": False,
@@ -25,8 +25,8 @@ if __name__ == "__main__":
 
     config_valid = {
         "model_name": "SENet154",
-        "img_size": 289,
-        "crop_size": 253
+        "img_size": 366,
+        "crop_size": 320
     }
 
     config = {

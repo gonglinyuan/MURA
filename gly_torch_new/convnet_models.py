@@ -57,26 +57,9 @@ def load(model_name, input_size, pretrained):
         kernel_count = model.last_linear.in_features
         model.last_linear = nn.Linear(kernel_count, 1)
 
-        if input_size % 32 == 0:  # Original mode.
+        if input_size != 224:
+            assert input_size % 32 == 0
             model.avg_pool = nn.AvgPool2d(input_size // 32, stride=1)
-        elif input_size % 32 == 29:  # Optimized mode.
-            model.avg_pool = nn.AvgPool2d((input_size - 29) // 32, stride=1)
-
-        def features(self, x):
-            print(x.shape)
-            x = self.layer0(x)
-            print(x.shape)
-            x = self.layer1(x)
-            print(x.shape)
-            x = self.layer2(x)
-            print(x.shape)
-            x = self.layer3(x)
-            print(x.shape)
-            x = self.layer4(x)
-            print(x.shape)
-            return x
-
-        model.features = types.MethodType(features, model)
     elif model_name in ["DPN107"]:
         if model_name == "DPN107":
             model = pretrainedmodels.models.dpn107(pretrained="imagenet+5k")

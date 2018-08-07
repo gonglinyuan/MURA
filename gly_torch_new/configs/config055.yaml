@@ -1,5 +1,5 @@
 train:
-  batch_size: 20
+  batch_size: 16
   beta1: 0.9
   beta2: 0.999
   differential_lr: 10
@@ -18,6 +18,6 @@ train:
     random_crop_factor: 0.08
     ten_crop_positions: null
 valid:
-  crop_size: 253
-  img_size: 289
+  crop_size: 320
+  img_size: 366
   model_name: SENet154
