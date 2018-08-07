@@ -59,24 +59,8 @@ def load(model_name, input_size, pretrained):
 
         if input_size % 32 == 0:  # Original mode.
             model.avg_pool = nn.AvgPool2d(input_size // 32, stride=1)
-        elif input_size % 32 == 31:  # Optimized mode.
-            model.avg_pool = nn.AvgPool2d((input_size - 31) // 32, stride=1)
-
-        def features(self, x):
-            print(x.shape)
-            x = self.layer0(x)
-            print(x.shape)
-            x = self.layer1(x)
-            print(x.shape)
-            x = self.layer2(x)
-            print(x.shape)
-            x = self.layer3(x)
-            print(x.shape)
-            x = self.layer4(x)
-            print(x.shape)
-            return x
-
-        model.features = types.MethodType(features, model)
+        elif input_size % 32 == 29:  # Optimized mode.
+            model.avg_pool = nn.AvgPool2d((input_size - 29) // 32, stride=1)
     elif model_name in ["DPN107"]:
         if model_name == "DPN107":
             model = pretrainedmodels.models.dpn107(pretrained="imagenet+5k")

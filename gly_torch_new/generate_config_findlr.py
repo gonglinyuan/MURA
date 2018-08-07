@@ -25,8 +25,8 @@ if __name__ == "__main__":
 
     config_valid = {
         "model_name": "SENet154",
-        "img_size": 256,
-        "crop_size": 224
+        "img_size": 289,
+        "crop_size": 253
     }
 
     config = {
@@ -34,5 +34,5 @@ if __name__ == "__main__":
         "valid": config_valid
     }
 
-    with open("configs/config056.yaml", "w") as f:
+    with open("configs/config055.yaml", "w") as f:
         yaml.dump(config, f, default_flow_style=False)
