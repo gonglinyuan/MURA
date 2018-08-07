@@ -15,10 +15,10 @@ if __name__ == "__main__":
             random_crop_factor=0.08
         ),
         "batch_size": 20,
-        "optimizer_name": "adam",
-        "learning_rate": 1e-6 * (0.01 / 1e-6) ** (23 / 80),
-        "differential_lr": 10,
-        "weight_decay": 1e-5,
+        "optimizer_name": "sgd",
+        "learning_rate": 1e-6 * (0.01 / 1e-6) ** (64 / 80),
+        "differential_lr": 1,
+        "weight_decay": 0,
         "is_nesterov": False,
         "beta1": 0.75,
         "beta2": 0.999,
@@ -42,5 +42,5 @@ if __name__ == "__main__":
         "valid": config_valid
     }
 
-    with open("configs/config059.yaml", "w") as f:
+    with open("configs/config060.yaml", "w") as f:
         yaml.dump(config, f, default_flow_style=False)
