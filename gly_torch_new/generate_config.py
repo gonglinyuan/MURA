@@ -15,9 +15,9 @@ if __name__ == "__main__":
             random_crop_factor=0.08
         ),
         "batch_size": 20,
-        "optimizer_name": "sgd",
-        "learning_rate": 3e-4,
-        "differential_lr": 1,
+        "optimizer_name": "adam",
+        "learning_rate": 1e-6 * (0.01 / 1e-6) ** (23 / 80),
+        "differential_lr": 10,
         "weight_decay": 1e-5,
         "is_nesterov": False,
         "beta1": 0.75,
@@ -26,7 +26,7 @@ if __name__ == "__main__":
     }
 
     config_valid = {
-        "model_name": "VGG16bn",
+        "model_name": "VGG19bn",
         "img_size": 256,
         "crop_size": 224,
         "transform": DataTransform(
@@ -34,7 +34,7 @@ if __name__ == "__main__":
             pad=True,
             crop_mode="ten"
         ),
-        "batch_size": 16
+        "batch_size": 20
     }
 
     config = {
@@ -42,5 +42,5 @@ if __name__ == "__main__":
         "valid": config_valid
     }
 
-    with open("configs/config054.yaml", "w") as f:
+    with open("configs/config059.yaml", "w") as f:
         yaml.dump(config, f, default_flow_style=False)
