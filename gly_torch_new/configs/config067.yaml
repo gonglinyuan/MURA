@@ -18,7 +18,7 @@ train:
     pad: true
     random_crop_factor: 0.08
     ten_crop_positions: null
-  weight_decay: 1e-5
+  weight_decay: 1.0e-05
 valid:
   batch_size: 20
   crop_size: 224
