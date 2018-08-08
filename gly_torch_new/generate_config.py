@@ -14,27 +14,27 @@ if __name__ == "__main__":
             crop_mode="random",
             random_crop_factor=0.08
         ),
-        "batch_size": 20,
+        "batch_size": 16,
         "optimizer_name": "sgd",
-        "learning_rate": 1e-6 * (0.01 / 1e-6) ** (61 / 80),
+        "learning_rate": 1e-6 * (0.01 / 1e-6) ** (29 / 80),
         "differential_lr": 3,
         "weight_decay": 0,
         "is_nesterov": False,
-        "beta1": 0.75,
+        "beta1": 0.9,
         "beta2": 0.999,
         "epoch_num": 60
     }
 
     config_valid = {
-        "model_name": "VGG19bn",
-        "img_size": 256,
-        "crop_size": 224,
+        "model_name": "SENet154",
+        "img_size": 293,
+        "crop_size": 256,
         "transform": DataTransform(
             no_bg=True,
             pad=True,
             crop_mode="ten"
         ),
-        "batch_size": 20
+        "batch_size": 16
     }
 
     config = {
@@ -42,5 +42,5 @@ if __name__ == "__main__":
         "valid": config_valid
     }
 
-    with open("configs/config062.yaml", "w") as f:
+    with open("configs/config069.yaml", "w") as f:
         yaml.dump(config, f, default_flow_style=False)
