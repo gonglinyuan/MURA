@@ -6,7 +6,7 @@ train:
   epoch_num: 60
   is_nesterov: false
   learning_rate: 2.8183829312644532e-05
-  optimizer_name: sgd
+  optimizer_name: adam
   transform: !!python/object:data_augmentation.DataTransform
     _num_crops: 0
     aug_rotate: 20

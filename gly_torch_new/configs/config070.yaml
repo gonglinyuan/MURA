@@ -2,7 +2,7 @@ train:
   batch_size: 16
   beta1: 0.9
   beta2: 0.999
-  differential_lr: 10
+  differential_lr: 1
   epoch_num: 60
   is_nesterov: false
   learning_rate: 3.162277660168379e-05
