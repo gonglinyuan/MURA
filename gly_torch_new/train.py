@@ -178,6 +178,7 @@ def test(*, path_data, path_model, config_valid):
     loss, acc = epoch_valid(model, data_loader, loss_fn)
     timestamp_now = time.strftime("%Y%m%d") + '-' + time.strftime("%H%M%S")
     print(f"[----test---][{timestamp_now}]  valid-loss={loss:6f}  valid-acc={acc:6f}")
+    return loss, acc
 
 
 def epoch_train(model, data_loader, optimizer, loss_fn):

@@ -29,8 +29,8 @@ def main():
     )
 
     print(config)
-    print(timestamp, path_config)
-    train.test(
+
+    loss, _ = train.test(
         path_data=path_data_valid,
         path_model=path_model + "-L",
         config_valid=config["valid"]
@@ -41,6 +41,9 @@ def main():
         path_model=path_model + "-A",
         config_valid=config["valid"]
     )
+
+    loss = str(loss)
+    print(timestamp, f"{loss[0] + loss[2:8]}-{config['valid']['model_name']}-{path_config.split('/')[-1][:-5]}")
 
 
 if __name__ == "__main__":
