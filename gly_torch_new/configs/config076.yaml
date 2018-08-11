@@ -1,0 +1,37 @@
+train:
+  batch_size: 16
+  beta1: 0.9
+  beta2: 0.999
+  differential_lr: 1
+  epoch_num: 60
+  is_nesterov: false
+  learning_rate: 0.001995262314968879
+  optimizer_name: sgd
+  transform: !!python/object:data_augmentation.DataTransform
+    _num_crops: 0
+    aug_rotate: 24.134154998960376
+    aug_shear: 14.258191646554772
+    crop_mode: random
+    flip_h: random
+    no_bg: true
+    normalize: false
+    pad: true
+    random_crop_factor: 0.11150006520798474
+    ten_crop_positions: null
+  weight_decay: 1.0398272553273132e-07
+valid:
+  batch_size: 16
+  crop_size: 256
+  img_size: 293
+  model_name: SENet154
+  transform: !!python/object:data_augmentation.DataTransform
+    _num_crops: 10
+    aug_rotate: 0
+    aug_shear: 0
+    crop_mode: ten
+    flip_h: null
+    no_bg: true
+    normalize: false
+    pad: true
+    random_crop_factor: 0.08
+    ten_crop_positions: null
