@@ -16,7 +16,7 @@ if __name__ == "__main__":
         ),
         "batch_size": 16,
         "optimizer_name": "adam",
-        "differential_lr": 1,
+        "differential_lr": 10,
         "is_nesterov": False,
         "beta1": 0.9,
         "beta2": 0.999,
@@ -34,5 +34,5 @@ if __name__ == "__main__":
         "valid": config_valid
     }
 
-    with open("configs/config080.yaml", "w") as f:
+    with open("configs/config081.yaml", "w") as f:
         yaml.dump(config, f, default_flow_style=False)
