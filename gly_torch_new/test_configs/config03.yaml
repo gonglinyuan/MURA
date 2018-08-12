@@ -1,0 +1,19 @@
+batch_size: 32
+crop_size: 224
+img_size: 256
+model_name: VGG16bn
+path_model: models/VGG16bn.pt
+transform: !!python/object:data_augmentation.DataTransform
+  _num_crops: 10
+  aug_rotate: 0
+  aug_shear: 0
+  crop_mode: ten
+  flip_h: null
+  no_bg: true
+  normalize: false
+  pad: true
+  random_crop_factor: 0.08
+  ten_crop_positions:
+  - 5
+  - 6
+  - 4

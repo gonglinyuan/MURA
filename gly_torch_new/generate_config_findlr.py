@@ -15,7 +15,7 @@ if __name__ == "__main__":
             random_crop_factor=0.08
         ),
         "batch_size": 16,
-        "optimizer_name": "adam",
+        "optimizer_name": "sgd",
         "differential_lr": 10,
         "is_nesterov": False,
         "beta1": 0.9,
@@ -34,5 +34,5 @@ if __name__ == "__main__":
         "valid": config_valid
     }
 
-    with open("configs/config081.yaml", "w") as f:
+    with open("configs/config083.yaml", "w") as f:
         yaml.dump(config, f, default_flow_style=False)
