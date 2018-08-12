@@ -9,13 +9,13 @@ if __name__ == "__main__":
             no_bg=True,
             pad=True,
             aug_rotate=20,
-            aug_shear=0,
+            aug_shear=10,
             flip_h="random",
             crop_mode="random",
             random_crop_factor=0.08
         ),
-        "batch_size": 16,
-        "optimizer_name": "sgd",
+        "batch_size": 20,
+        "optimizer_name": "adam",
         "differential_lr": 10,
         "is_nesterov": False,
         "beta1": 0.9,
@@ -24,9 +24,9 @@ if __name__ == "__main__":
     }
 
     config_valid = {
-        "model_name": "DPN107",
-        "img_size": 256,
-        "crop_size": 224
+        "model_name": "InceptionV4",
+        "img_size": 378,
+        "crop_size": 331
     }
 
     config = {
@@ -34,5 +34,5 @@ if __name__ == "__main__":
         "valid": config_valid
     }
 
-    with open("configs/config083.yaml", "w") as f:
+    with open("configs/config089.yaml", "w") as f:
         yaml.dump(config, f, default_flow_style=False)

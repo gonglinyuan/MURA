@@ -1,0 +1,23 @@
+train:
+  batch_size: 20
+  beta1: 0.9
+  beta2: 0.999
+  differential_lr: 10
+  epoch_num: 80
+  is_nesterov: false
+  optimizer_name: adam
+  transform: !!python/object:data_augmentation.DataTransform
+    _num_crops: 0
+    aug_rotate: 20
+    aug_shear: 10
+    crop_mode: random
+    flip_h: random
+    no_bg: true
+    normalize: false
+    pad: true
+    random_crop_factor: 0.08
+    ten_crop_positions: null
+valid:
+  crop_size: 331
+  img_size: 378
+  model_name: InceptionV4

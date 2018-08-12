@@ -8,11 +8,11 @@ if __name__ == "__main__":
         "transform": DataTransform(
             no_bg=True,
             pad=True,
-            aug_rotate=np.random.uniform(10.0, 30.0),
-            aug_shear=np.random.uniform(0.0, 15.0),
+            aug_rotate=np.random.uniform(22.5, 30.0),
+            aug_shear=np.random.uniform(10.0, 15.0),
             flip_h="random",
             crop_mode="random",
-            random_crop_factor=1.0 / np.random.uniform(2.5, 12.5)
+            random_crop_factor=1.0 / np.random.uniform(7.5, 12.5)
         ),
         "batch_size": 16,
         "optimizer_name": "sgd",
@@ -42,5 +42,5 @@ if __name__ == "__main__":
         "valid": config_valid
     }
 
-    with open("configs/config079.yaml", "w") as f:
+    with open("configs/config085.yaml", "w") as f:
         yaml.dump(config, f, default_flow_style=False)

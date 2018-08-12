@@ -25,6 +25,11 @@ def _differential_lr_params(model_name, model, lr, factor):
             {"params": model.features.parameters()},
             {"params": model.classifier.parameters(), "lr": lr * factor}
         ]
+    elif model_name in ["InceptionV4"]:
+        return [
+            {"params": model.features.parameters()},
+            {"params": model.last_linear.parameters(), "lr": lr * factor}
+        ]
     else:
         raise Exception()
 
