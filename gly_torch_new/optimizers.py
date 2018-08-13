@@ -59,7 +59,7 @@ def load(name, parameters, *, lr, weight_decay=1e-5, nesterov=False, beta1=0.9, 
     if scheduling == "Adaptive":
         scheduler = ReduceLROnPlateau(optimizer, factor=0.1, patience=5, mode='min', verbose=True)
     elif scheduling == "Cosine":
-        scheduler = CosineAnnealingLRRestart(optimizer, 20)
+        scheduler = CosineAnnealingLRRestart(optimizer, 30)
     else:
         raise Exception()
     return optimizer, scheduler
@@ -77,7 +77,7 @@ def load_differential_lr(name, model_name, model, *, lr, factor, weight_decay=1e
     if scheduling == "Adaptive":
         scheduler = ReduceLROnPlateau(optimizer, factor=0.1, patience=5, mode='min', verbose=True)
     elif scheduling == "Cosine":
-        scheduler = CosineAnnealingLRRestart(optimizer, 20)
+        scheduler = CosineAnnealingLRRestart(optimizer, 30)
     else:
         raise Exception()
     return optimizer, scheduler
