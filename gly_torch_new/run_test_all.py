@@ -10,8 +10,8 @@ import predict
 
 def main():
     keys, results = [], []
-    for path_config in ["config01.yaml", "config02.yaml", "config03.yaml", "config04.yaml", "config05.yaml",
-                        "config06.yaml", "config07.yaml"]:
+    for path_config in ["config06.yaml", "config07.yaml", "config01.yaml", "config02.yaml", "config03.yaml",
+                        "config04.yaml", "config05.yaml"]:
         with open(os.path.join("configs", path_config), "r") as f:
             config = yaml.load(f)
         keys, result = predict.predict(sys.argv[1], config)

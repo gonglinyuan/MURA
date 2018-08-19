@@ -15,7 +15,7 @@ def predict(path_csv, config):
     model = convnet_models.load(
         config["model_name"],
         input_size=config["crop_size"],
-        pretrained=True
+        pretrained=False
     ).to(GPU)
     model_checkpoint = torch.load(config["path_model"], map_location=lambda storage, loc: storage.cuda(0))
     model.load_state_dict(model_checkpoint['state_dict'])
