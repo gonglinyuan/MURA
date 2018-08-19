@@ -17,3 +17,5 @@ transform: !!python/object:data_augmentation.DataTransform
   - 1
   - 2
   - 9
+target_mean: 0.5
+target_std: 0.5
