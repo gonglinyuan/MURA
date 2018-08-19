@@ -15,7 +15,8 @@ transform: !!python/object:data_augmentation.DataTransform
   random_crop_factor: 0.08
   ten_crop_positions:
   - 1
-  - 2
+  - 7
+  - 8
   - 9
 target_mean: 0.5
 target_std: 0.5

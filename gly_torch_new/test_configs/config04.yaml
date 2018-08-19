@@ -16,6 +16,7 @@ transform: !!python/object:data_augmentation.DataTransform
   ten_crop_positions:
   - 0
   - 2
+  - 3
   - 9
 target_mean: 0.5
 target_std: 0.5
