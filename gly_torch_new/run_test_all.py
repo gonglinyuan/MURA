@@ -15,7 +15,7 @@ def main():
             config = yaml.load(f)
         keys, result = predict.predict(sys.argv[1], config)
         results.append(result)
-    results = np.concatenate(results, axis=1)
+    results = np.stack(results, axis=1)
     score = np.mean(results, axis=1)
     label = np.array(score >= 0.0, dtype=np.int32)
     pandas.DataFrame(label, index=keys).to_csv(sys.argv[2], header=False)

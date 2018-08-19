@@ -1,4 +1,4 @@
-batch_size: 40
+batch_size: 32
 crop_size: 320
 img_size: 366
 model_name: DenseNet201

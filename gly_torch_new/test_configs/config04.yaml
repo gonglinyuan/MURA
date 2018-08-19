@@ -1,4 +1,4 @@
-batch_size: 24
+batch_size: 16
 crop_size: 256
 img_size: 293
 model_name: SENet154

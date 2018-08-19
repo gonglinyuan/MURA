@@ -1,4 +1,4 @@
-batch_size: 32
+batch_size: 24
 crop_size: 224
 img_size: 256
 model_name: VGG16bn
