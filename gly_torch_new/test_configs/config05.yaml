@@ -1,4 +1,4 @@
-batch_size: 32
+batch_size: 24
 crop_size: 331
 img_size: 378
 model_name: InceptionV4
