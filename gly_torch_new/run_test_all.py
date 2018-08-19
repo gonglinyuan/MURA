@@ -1,3 +1,4 @@
+import os
 import sys
 
 import numpy as np
@@ -11,7 +12,7 @@ def main():
     keys, results = [], []
     for path_config in ["config01.yaml", "config02.yaml", "config03.yaml", "config04.yaml", "config05.yaml",
                         "config06.yaml", "config07.yaml"]:
-        with open(path_config, "r") as f:
+        with open(os.path.join("configs", path_config), "r") as f:
             config = yaml.load(f)
         keys, result = predict.predict(sys.argv[1], config)
         results.append(result)
